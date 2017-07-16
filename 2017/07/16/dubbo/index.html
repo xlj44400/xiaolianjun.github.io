@@ -93,15 +93,24 @@
 
 
 
-<meta name="description" content="技术和生活,我融为一体">
-<meta property="og:type" content="website">
-<meta property="og:title" content="xlj44400&#39;Blog">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta name="description" content="服务治理框架：DUBBOdubbo官网1DUBBO是一个分布式服务框架，致力于提供高性能和透明化的RPC远程服务调用方案，是阿里巴巴SOA服务化治理方案的核心框架，每天为2,000+个服务提供3,000,000,000+次访问量支持，并被广泛应用于阿里巴巴集团的各成员站点。 基本使用 源码：svn checkout http://code.alibabatech.com/svn/dubbo/tru">
+<meta property="og:type" content="article">
+<meta property="og:title" content="dubbo源码分析">
+<meta property="og:url" content="http://yoursite.com/2017/07/16/dubbo/index.html">
 <meta property="og:site_name" content="xlj44400&#39;Blog">
-<meta property="og:description" content="技术和生活,我融为一体">
+<meta property="og:description" content="服务治理框架：DUBBOdubbo官网1DUBBO是一个分布式服务框架，致力于提供高性能和透明化的RPC远程服务调用方案，是阿里巴巴SOA服务化治理方案的核心框架，每天为2,000+个服务提供3,000,000,000+次访问量支持，并被广泛应用于阿里巴巴集团的各成员站点。 基本使用 源码：svn checkout http://code.alibabatech.com/svn/dubbo/tru">
+<meta property="og:image" content="https://pic.manqian.cn/b55748c9-5327-492d-ac04-41e4e5c3ca29?t=1500186437025">
+<meta property="og:image" content="https://pic.manqian.cn/4e157187-619e-4986-a532-b0a4a92de8f9?t=1500186860489">
+<meta property="og:image" content="https://pic.manqian.cn/1669362e-6047-496e-9dd7-1b3a2a71d01b?t=1500186929911">
+<meta property="og:image" content="https://pic.manqian.cn/8d2953ae-fc4f-4df0-b8c6-3f591a2e02d5?t=1500186886082">
+<meta property="og:image" content="https://pic.manqian.cn/b95a0eb7-9825-4784-8067-c255b7a4499f?t=1500186906047">
+<meta property="og:image" content="https://pic.manqian.cn/545c9435-7d99-4f36-90c2-45836c5ab1d1?t=1500186917815">
+<meta property="og:image" content="https://pic.manqian.cn/8fb120c6-98ff-44b6-b116-4fcd57864799?t=1500186947775">
+<meta property="og:updated_time" content="2017-07-16T06:43:20.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="xlj44400&#39;Blog">
-<meta name="twitter:description" content="技术和生活,我融为一体">
+<meta name="twitter:title" content="dubbo源码分析">
+<meta name="twitter:description" content="服务治理框架：DUBBOdubbo官网1DUBBO是一个分布式服务框架，致力于提供高性能和透明化的RPC远程服务调用方案，是阿里巴巴SOA服务化治理方案的核心框架，每天为2,000+个服务提供3,000,000,000+次访问量支持，并被广泛应用于阿里巴巴集团的各成员站点。 基本使用 源码：svn checkout http://code.alibabatech.com/svn/dubbo/tru">
+<meta name="twitter:image" content="https://pic.manqian.cn/b55748c9-5327-492d-ac04-41e4e5c3ca29?t=1500186437025">
 
 
 
@@ -129,13 +138,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/07/16/dubbo/"/>
 
 
 
 
 
-  <title>xlj44400'Blog</title>
+  <title>dubbo源码分析 | xlj44400'Blog</title>
   
 
 
@@ -160,9 +169,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-   page-home 
- ">
+  <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -245,9 +252,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -273,9 +280,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/07/16/dubbo/" itemprop="url">dubbo源码分析</a></h1>
+          <h1 class="post-title" itemprop="name headline">dubbo源码分析</h1>
         
 
         <div class="post-meta">
@@ -344,9 +349,7 @@
       
 
       
-        
-          
-            <h1 id="服务治理框架：DUBBO"><a href="#服务治理框架：DUBBO" class="headerlink" title="服务治理框架：DUBBO"></a>服务治理框架：DUBBO</h1><h2 id="dubbo官网"><a href="#dubbo官网" class="headerlink" title="dubbo官网"></a><a href="http://dubbo.io/" target="_blank" rel="external">dubbo官网</a></h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">DUBBO是一个分布式服务框架，致力于提供高性能和透明化的RPC远程服务调用方案，是阿里巴巴SOA服务化治理方案的核心框架，每天为2,000+个服务提供3,000,000,000+次访问量支持，并被广泛应用于阿里巴巴集团的各成员站点。</div></pre></td></tr></table></figure>
+        <h1 id="服务治理框架：DUBBO"><a href="#服务治理框架：DUBBO" class="headerlink" title="服务治理框架：DUBBO"></a>服务治理框架：DUBBO</h1><h2 id="dubbo官网"><a href="#dubbo官网" class="headerlink" title="dubbo官网"></a><a href="http://dubbo.io/" target="_blank" rel="external">dubbo官网</a></h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">DUBBO是一个分布式服务框架，致力于提供高性能和透明化的RPC远程服务调用方案，是阿里巴巴SOA服务化治理方案的核心框架，每天为2,000+个服务提供3,000,000,000+次访问量支持，并被广泛应用于阿里巴巴集团的各成员站点。</div></pre></td></tr></table></figure>
 <h2 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h2><ul>
 <li><p>源码：svn checkout <a href="http://code.alibabatech.com/svn/dubbo/trunk" target="_blank" rel="external">http://code.alibabatech.com/svn/dubbo/trunk</a> dubbo</p>
 </li>
@@ -455,20 +458,27 @@
 <p>2、依赖包版本冲突<br>遇到的有 jedis版本和我们用的版本不一致，官方的是jedis-2.1.0,我们平台用的是2.6.2，jedis 2.2版本以上代码有很大变动，不兼容以前的版本，所以需要自己改dubbo源码</p>
 <h2 id="推荐博客"><a href="#推荐博客" class="headerlink" title="推荐博客"></a><a href="http://blog.csdn.net/yinwenjie/article/details/50277289" target="_blank" rel="external">推荐博客</a></h2><p>dubbo的源码还有很多值得学习的地方，要深入研究，还得一行一行调试才行！</p>
 
-          
+      
+    </div>
+
+    <div>
+      
         
+
       
     </div>
 
     <div>
       
-    </div>
+        
 
-    <div>
       
     </div>
 
     <div>
+      
+        
+
       
     </div>
 
@@ -476,21 +486,22 @@
       
 
       
+      
+      
 
       
 
       
-      
-        <div class="post-eof"></div>
       
     </footer>
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -498,6 +509,10 @@
 
 
           
+  <div class="comments" id="comments">
+    
+  </div>
+
 
         </div>
         
@@ -518,8 +533,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="https://sfault-avatar.b0.upaiyun.com/357/822/3578222171-596af63ded11a_huge256"
@@ -572,6 +596,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#服务治理框架：DUBBO"><span class="nav-number">1.</span> <span class="nav-text">服务治理框架：DUBBO</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#dubbo官网"><span class="nav-number">1.1.</span> <span class="nav-text">dubbo官网</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本使用"><span class="nav-number">1.2.</span> <span class="nav-text">基本使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dubbo-整体设计"><span class="nav-number">1.3.</span> <span class="nav-text">dubbo 整体设计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#图例说明"><span class="nav-number">1.4.</span> <span class="nav-text">图例说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#各层说明："><span class="nav-number">1.5.</span> <span class="nav-text">各层说明：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关系说明："><span class="nav-number">1.6.</span> <span class="nav-text">关系说明：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#依赖关系"><span class="nav-number">1.7.</span> <span class="nav-text">依赖关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解析服务"><span class="nav-number">1.8.</span> <span class="nav-text">解析服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#暴露服务"><span class="nav-number">1.9.</span> <span class="nav-text">暴露服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#引用服务"><span class="nav-number">1.10.</span> <span class="nav-text">引用服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#拦截服务"><span class="nav-number">1.11.</span> <span class="nav-text">拦截服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#服务提供者暴露一个服务的过程"><span class="nav-number">1.12.</span> <span class="nav-text">服务提供者暴露一个服务的过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#服务消费者消费一个服务的过程"><span class="nav-number">1.13.</span> <span class="nav-text">服务消费者消费一个服务的过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#两种Invoker：服务提供Invoker和服务消费Invoker"><span class="nav-number">1.14.</span> <span class="nav-text">两种Invoker：服务提供Invoker和服务消费Invoker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#监控部署"><span class="nav-number">1.15.</span> <span class="nav-text">监控部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意的坑"><span class="nav-number">1.16.</span> <span class="nav-text">注意的坑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#推荐博客"><span class="nav-number">1.17.</span> <span class="nav-text">推荐博客</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -685,10 +725,10 @@
   
 
   
-    <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
 <script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
 
-  
+
 
   
 
