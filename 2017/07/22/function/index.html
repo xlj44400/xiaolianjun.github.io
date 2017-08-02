@@ -783,6 +783,7 @@ function showTime(Counter) {
 				}
 				for (var i = 0; i < results.length; i++) {
 					var object = results[i];
+					$(document.getElementById(url)).empty();
 					var content = object.get('time') + ' ' + $(document.getElementById(url)).text();
 					$(document.getElementById(url)).text(content);
 				}
