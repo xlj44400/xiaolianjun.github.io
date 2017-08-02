@@ -626,7 +626,7 @@ function showTime(Counter) {
 				  if(i>0) continue;
 					var object = results[i];
 					var str = $(document.getElementById(url)).text();
-					var content = object.get('time') + ' ' + str.replace(/(\d*)/,'');
+					var content =  ' ' + str.replace(/(\d*)/,'')+' '+object.get('time');
 					$(document.getElementById(url)).text(content);
 				}
 			},
