@@ -838,7 +838,8 @@ function showTime(Counter) {
 				}
 				for (var i = 0; i < results.length; i++) {
 					var object = results[i];
-					var content = object.get('time') + ' ' + $(document.getElementById(url)).text();
+					var str = $(document.getElementById(url)).text();
+					var content = object.get('time') + ' ' + str.replace(/(\d*)/,'');
 					$(document.getElementById(url)).text(content);
 				}
 			},
