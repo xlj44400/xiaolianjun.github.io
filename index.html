@@ -966,6 +966,7 @@ function addCount(Counter) {
 				counter.increment("time");
 				counter.save(null, {
 					success: function(counter) {
+					  console.log(counter.get('time'),$(document.getElementById(url)).text())
 						var content =  counter.get('time') + ' ' + $(document.getElementById(url)).text();
 						$(document.getElementById(url)).text(content);
 					},
