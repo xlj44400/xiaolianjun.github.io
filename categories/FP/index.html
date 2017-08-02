@@ -558,7 +558,7 @@ function showTime(Counter) {
 		query.find({
 			success: function(results) {
 				if (results.length == 0) {
-					var content = '0 ' + $(document.getElementById(url)).text();
+					var content = ' ' + $(document.getElementById(url)).text()+' 0';
 					$(document.getElementById(url)).text(content);
 					return;
 				}
@@ -592,8 +592,7 @@ function addCount(Counter) {
 				counter.increment("time");
 				counter.save(null, {
 					success: function(counter) {
-					  console.log(counter.get('time'),$(document.getElementById(url)).text())
-						var content =  counter.get('time') + ' ' + $(document.getElementById(url)).text();
+						var content = ' ' + $(document.getElementById(url)).text()+' '+counter.get('time');
 						$(document.getElementById(url)).text(content);
 					},
 					error: function(counter, error) {
@@ -607,8 +606,7 @@ function addCount(Counter) {
 				newcounter.set("time", 1);
 				newcounter.save(null, {
 					success: function(newcounter) {
-					    console.log("newcounter.get('time')="+newcounter.get('time'));
-						var content = newcounter.get('time') + ' ' + $(document.getElementById(url)).text();
+						var content = ' ' + $(document.getElementById(url)).text()+' '+newcounter.get('time');
 						$(document.getElementById(url)).text(content);
 					},
 					error: function(newcounter, error) {
