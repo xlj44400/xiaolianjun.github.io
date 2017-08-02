@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="本文主要介绍自定义扩展dubbo的监控服务,监控中心的统计数据通过Metrics输出到graphite,然后用grafana可视化。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="dubbo监控+graphite+Metrics+grafana">
+<meta property="og:url" content="https://xlj44400.github.io/2017/08/02/monitor/index.html">
+<meta property="og:site_name" content="xlj44400&#39;Blog">
+<meta property="og:description" content="本文主要介绍自定义扩展dubbo的监控服务,监控中心的统计数据通过Metrics输出到graphite,然后用grafana可视化。">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2425945-ebd14193917dea4c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2017-08-02T14:42:37.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="dubbo监控+graphite+Metrics+grafana">
+<meta name="twitter:description" content="本文主要介绍自定义扩展dubbo的监控服务,监控中心的统计数据通过Metrics输出到graphite,然后用grafana可视化。">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/2425945-ebd14193917dea4c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://xlj44400.github.io/2017/08/02/monitor/"/>
+
+
+
+
+
+  <title>dubbo监控+graphite+Metrics+grafana | xlj44400'Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">xlj44400'Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">何以升华,唯有沉淀</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://xlj44400.github.io/2017/08/02/monitor/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xlj44400">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://pic.manqian.cn/2d363401-d913-4d3d-b8fb-1c21f9dacf93?t=1500191019176">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xlj44400'Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">dubbo监控+graphite+Metrics+grafana</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-02T23:55:29+08:00">
+                2017-08-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/dubbo-graphite-grafana/" itemprop="url" rel="index">
+                    <span itemprop="name">dubbo graphite grafana</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/08/02/monitor/" class="leancloud_visitors" data-flag-title="dubbo监控+graphite+Metrics+grafana">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文主要介绍自定义扩展dubbo的监控服务,监控中心的统计数据通过<a href="http://wuchong.me/blog/2015/08/01/getting-started-with-metrics/" target="_blank" rel="external">Metrics</a>输出到graphite,<br>然后用<a href="https://grafana.com/" target="_blank" rel="external">grafana</a>可视化。<br><a id="more"></a></p>
+<h3 id="Metrics介绍"><a href="#Metrics介绍" class="headerlink" title="Metrics介绍"></a>Metrics介绍</h3><p>Metrics，谷歌翻译就是度量的意思。当我们需要为某个系统某个服务做监控、做统计，就需要用到Metrics。</p>
+<p>举个栗子，一个图片压缩服务：</p>
+<ul>
+<li>每秒钟的请求数是多少（TPS）？</li>
+<li>平均每个请求处理的时间(mst)？</li>
+<li>请求处理的最长耗时(maxElapsed)？</li>
+<li>等待处理的请求队列长度？</li>
+<li><p>又或者一个缓存服务：</p>
+</li>
+<li><p>缓存的命中率？</p>
+</li>
+<li>平均查询缓存的时间？<br>基本上每一个服务、应用都需要做一个监控系统，这需要尽量以少量的代码，实现统计某类数据的功能。</li>
+</ul>
+<p>以 Java 为例，目前最为流行的 metrics 库是来自 Coda Hale 的 dropwizard/metrics，该库被广泛地应用于各个知名的开源项目中。例如 Hadoop，Kafka，Spark，JStorm 中。<br>具体可以参考 <a href="http://wuchong.me/blog/2015/08/01/getting-started-with-metrics/" target="_blank" rel="external">Metrics</a></p>
+<h3 id="dubbo-monitor扩展"><a href="#dubbo-monitor扩展" class="headerlink" title="dubbo monitor扩展"></a>dubbo monitor扩展</h3><ul>
+<li><p>实现 <figure class="highlight plain"><figcaption><span>接口</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">* ```DubboMonitor``` 默认1分钟发送一次统计数据到注册中心</div><div class="line">```java</div><div class="line">// 定时任务执行器</div><div class="line">    private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(3, new NamedThreadFactory(&quot;DubboMonitorSendTimer&quot;, true));</div><div class="line"></div><div class="line">    // 统计信息收集定时器</div><div class="line">    private final ScheduledFuture&lt;?&gt; sendFuture;</div><div class="line">    </div><div class="line">    private final Invoker&lt;MonitorService&gt; monitorInvoker;</div><div class="line"></div><div class="line">    private final MonitorService monitorService;</div><div class="line"></div><div class="line">    private final long monitorInterval;</div><div class="line">    </div><div class="line">    private final ConcurrentMap&lt;Statistics, AtomicReference&lt;long[]&gt;&gt; statisticsMap = new ConcurrentHashMap&lt;Statistics, AtomicReference&lt;long[]&gt;&gt;();</div><div class="line"></div><div class="line">    public DubboMonitor(Invoker&lt;MonitorService&gt; monitorInvoker, MonitorService monitorService) &#123;</div><div class="line">        this.monitorInvoker = monitorInvoker;</div><div class="line">        this.monitorService = monitorService;</div><div class="line">        this.monitorInterval = monitorInvoker.getUrl().getPositiveParameter(&quot;interval&quot;, 60000);</div><div class="line">        // 启动统计信息收集定时器</div><div class="line">        sendFuture = scheduledExecutorService.scheduleWithFixedDelay(new Runnable() &#123;</div><div class="line">            public void run() &#123;</div><div class="line">                // 收集统计信息</div><div class="line">                try &#123;</div><div class="line">                    send();</div><div class="line">                &#125; catch (Throwable t) &#123; // 防御性容错</div><div class="line">                    logger.error(&quot;Unexpected error occur at send statistic, cause: &quot; + t.getMessage(), t);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;, monitorInterval, monitorInterval, TimeUnit.MILLISECONDS);</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+</li>
+<li><p>我们可以自定义一个实现 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">```</div><div class="line">public class DubboMonitorService implements MonitorService</div></pre></td></tr></table></figure></p>
+</li>
+<li><p>定义一个阻塞队列，实现统计数据的收集和获取</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line">private final  BlockingQueue&lt;URL&gt; queue;</div><div class="line"></div><div class="line">//获取</div><div class="line"> public DubboMonitorService() &#123; // dubbo 那边是每分钟向监控中心发送一次调用统计数据</div><div class="line">        queue = new LinkedBlockingQueue&lt;URL&gt;(100000);</div><div class="line"></div><div class="line">        scheduledFuture = scheduledExecutorService.scheduleWithFixedDelay(()-&gt;&#123;</div><div class="line">            while (running) &#123;</div><div class="line">                try &#123;</div><div class="line">                    if(queue.isEmpty())&#123;</div><div class="line">                        break;</div><div class="line">                    &#125;</div><div class="line">                    saveInvoke(); // 记录统计日志 解析url数据 并转换成metrics</div><div class="line">                &#125; catch (Throwable t) &#123; // 防御性容错</div><div class="line">                    logger.error(&quot;Unexpected error occur at write stat log, cause: &quot; + t.getMessage(), t);</div><div class="line">                    try &#123;</div><div class="line">                        Thread.sleep(5000); // 失败延迟</div><div class="line">                    &#125; catch (Throwable t2) &#123;</div><div class="line">                        logger.error(&quot;sleep then still Throwable&quot;);</div><div class="line">                        t2.printStackTrace();</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;, 10, 10, TimeUnit.SECONDS);</div><div class="line"></div><div class="line">        /*registry = new MetricRegistry();</div><div class="line">        ConsoleReporter reporter = ConsoleReporter.forRegistry(registry).build();</div><div class="line">        reporter.start(10, TimeUnit.SECONDS);*/</div><div class="line">    &#125;</div><div class="line"></div><div class="line">//收集</div><div class="line">@Override</div><div class="line">    public void collect(URL statistics) &#123;</div><div class="line">        queue.offer(statistics);</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>具体的dubbo monitor 可以参考官方的 <a href="https://github.com/alibaba/dubbo/blob/master/dubbo-simple/dubbo-monitor-simple/src/main/java/com/alibaba/dubbo/monitor/simple/SimpleMonitorService.java" target="_blank" rel="external">simple-monitor</a></p>
+</li>
+</ul>
+<h3 id="监听"><a href="#监听" class="headerlink" title="监听"></a>监听<figure class="highlight plain"><figcaption><span>并通过```GraphiteReporter```输出数据到Graphite</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">```java</div><div class="line">@Configuration</div><div class="line">class MonitoringConfiguration &#123;</div><div class="line"></div><div class="line">    @Bean</div><div class="line">// graphite.host 就是下面安装的graphite的服务IP，默认端口 2003</div><div class="line">    public Graphite graphite(@Value(&quot;$&#123;graphite.host&#125;&quot;) String graphiteHost,</div><div class="line">                             @Value(&quot;$&#123;graphite.port&#125;&quot;) int graphitePort) &#123;</div><div class="line">        return new Graphite(new InetSocketAddress(graphiteHost, graphitePort));</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Bean</div><div class="line">    public GraphiteReporter graphiteReporter(Graphite graphite,</div><div class="line">                                             MetricRegistry registry) &#123;</div><div class="line">        GraphiteReporter reporter =</div><div class="line">                GraphiteReporter.forRegistry(registry)</div><div class="line">                .prefixedWith(&quot;monitor.stats&quot;)</div><div class="line">                .convertRatesTo(TimeUnit.SECONDS)</div><div class="line">                .convertDurationsTo(TimeUnit.MILLISECONDS)</div><div class="line">                .filter(MetricFilter.ALL)</div><div class="line">                .build(graphite);</div><div class="line">        reporter.start(1, TimeUnit.MINUTES);</div><div class="line"></div><div class="line">        return reporter;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Bean</div><div class="line">    public MemoryUsageGaugeSet memoryUsageGaugeSet(MetricRegistry registry) &#123;</div><div class="line">        MemoryUsageGaugeSet memoryUsageGaugeSet = new MemoryUsageGaugeSet();</div><div class="line">        registry.register(&quot;memory&quot;, memoryUsageGaugeSet);</div><div class="line">        return memoryUsageGaugeSet;</div><div class="line">    &#125;</div><div class="line">    @Bean</div><div class="line">    public ThreadStatesGaugeSet threadStatesGaugeSet(MetricRegistry registry) &#123;</div><div class="line">        ThreadStatesGaugeSet threadStatesGaugeSet = new ThreadStatesGaugeSet();</div><div class="line">        registry.register(&quot;threads&quot;, threadStatesGaugeSet);</div><div class="line">        return threadStatesGaugeSet;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></h3><h4 id="Graphite安装"><a href="#Graphite安装" class="headerlink" title="Graphite安装"></a>Graphite安装</h4><ul>
+<li>linux 参考［Graphite监控上手指南](<a href="http://www.infoq.com/cn/articles/graphite-intro" target="_blank" rel="external">http://www.infoq.com/cn/articles/graphite-intro</a>)</li>
+<li>mac 比较简单<ul>
+<li><figure class="highlight plain"><figcaption><span>carbon graphite-web ```都要装 直接brew就行了，默认安装路径：```/opt/graphite```</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">*  当然要先装python pip 这个自己研究</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<p>pip install whisper<br>brew carbon<br>brew graphite-web<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">* 注意：</div></pre></td></tr></table></figure></p>
+<p>carbon 安装完可以直接启动的 必须先启动<br>graphite-web 是django工程，需要配置初始数据库，比较麻烦<br>  1.database config:<br>  sudo PYTHONPATH=/opt/graphite/webapp django-admin.py migrate –settings=graphite.settings –run-syncdb<br>   <a href="http://graphite.readthedocs.io/en/latest/config-local-settings.html" target="_blank" rel="external">http://graphite.readthedocs.io/en/latest/config-local-settings.html</a><br>  2.抽取静态文件：<br>  PYTHONPATH=/opt/graphite/webapp django-admin.py collectstatic –noinput –settings=graphite.settings<br>  <a href="http://graphite.readthedocs.io/en/latest/config-local-settings.html" target="_blank" rel="external">http://graphite.readthedocs.io/en/latest/config-local-settings.html</a>   STATIC_ROOT<br>  3.django 不能用1.6的版本  pip install django<br>  初始化数据库：PYTHONPATH=/opt/graphite/webapp django-admin   migrate –settings=graphite.settings –run-syncdb<br>  4.启动应用：<br>  sudo PYTHONPATH=<code>pwd</code>/storage/whisper ./bin/run-graphite-devel-server.py –port=8085 –libs=<code>pwd</code>/webapp /opt/graphite<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#### 安装grafana</div><div class="line">这个比较简单，官网有详细[安装说明](http://docs.grafana.org/)</div></pre></td></tr></table></figure></p>
+<p>mac 例子：<br>brew update<br>brew install grafana<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">grafana里面配置好数据源，就可以自定义可视化报表了</div><div class="line">### 最后</div><div class="line">当然可以结合spring boot actuator，将可以配合Metrics一起运作</div><div class="line">```java</div><div class="line">import com.codahale.metrics.Gauge;</div><div class="line">import com.codahale.metrics.MetricSet;</div><div class="line">import org.springframework.boot.actuate.endpoint.PublicMetrics;</div><div class="line">import org.springframework.boot.actuate.metrics.Metric;</div><div class="line"></div><div class="line">import java.util.*;</div><div class="line"></div><div class="line">public class DbCountMetrics implements PublicMetrics,MetricSet&#123;</div><div class="line">    private Collection&lt;BaseDao&gt; baseDaos;</div><div class="line"></div><div class="line">    public DbCountMetrics(Collection&lt;BaseDao&gt; baseDaos) &#123;</div><div class="line">        this.baseDaos = baseDaos;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public Collection&lt;Metric&lt;?&gt;&gt; metrics() &#123;</div><div class="line">        List&lt;Metric&lt;?&gt;&gt; metrics = new LinkedList&lt;&gt;();</div><div class="line">        for (BaseDao baseDao : baseDaos) &#123;</div><div class="line">            String name = DbCountRunner.getRepositoryName(baseDao.getClass());</div><div class="line">            String metricName = &quot;counter.datasource.&quot; + name;</div><div class="line">            metrics.add(new Metric(metricName, baseDao.getCount()));</div><div class="line">        &#125;</div><div class="line">        return metrics;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public Map&lt;String,com.codahale.metrics.Metric&gt; getMetrics() &#123;</div><div class="line">        final Map&lt;String,com.codahale.metrics.Metric&gt; gauges = new HashMap&lt;&gt;();</div><div class="line">        for (Metric springMetric : metrics()) &#123;</div><div class="line">            gauges.put(springMetric.getName(), (Gauge&lt;Number&gt;) springMetric::getValue);</div><div class="line">        &#125;</div><div class="line">        return gauges;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>###附最终效果图<br><img src="http://upload-images.jianshu.io/upload_images/2425945-ebd14193917dea4c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>本人<a href="https://github.com/xlj44400" target="_blank" rel="external">github</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/22/function/" rel="next" title="傻瓜函数式编程">
+                <i class="fa fa-chevron-left"></i> 傻瓜函数式编程
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://pic.manqian.cn/2d363401-d913-4d3d-b8fb-1c21f9dacf93?t=1500191019176"
+               alt="xlj44400" />
+          <p class="site-author-name" itemprop="name">xlj44400</p>
+           
+              <p class="site-description motion-element" itemprop="description">技术和生活,我融为一体</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Metrics介绍"><span class="nav-number">1.</span> <span class="nav-text">Metrics介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dubbo-monitor扩展"><span class="nav-number">2.</span> <span class="nav-text">dubbo monitor扩展</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#监听"><span class="nav-number">3.</span> <span class="nav-text">监听并通过```GraphiteReporter```输出数据到Graphite123456789101112131415161718192021222324252627282930313233343536373839```java@Configurationclass MonitoringConfiguration {    @Bean// graphite.host 就是下面安装的graphite的服务IP，默认端口 2003    public Graphite graphite(@Value("${graphite.host}") String graphiteHost,                             @Value("${graphite.port}") int graphitePort) {        return new Graphite(new InetSocketAddress(graphiteHost, graphitePort));    }    @Bean    public GraphiteReporter graphiteReporter(Graphite graphite,                                             MetricRegistry registry) {        GraphiteReporter reporter =                GraphiteReporter.forRegistry(registry)                .prefixedWith("monitor.stats")                .convertRatesTo(TimeUnit.SECONDS)                .convertDurationsTo(TimeUnit.MILLISECONDS)                .filter(MetricFilter.ALL)                .build(graphite);        reporter.start(1, TimeUnit.MINUTES);        return reporter;    }    @Bean    public MemoryUsageGaugeSet memoryUsageGaugeSet(MetricRegistry registry) {        MemoryUsageGaugeSet memoryUsageGaugeSet = new MemoryUsageGaugeSet();        registry.register("memory", memoryUsageGaugeSet);        return memoryUsageGaugeSet;    }    @Bean    public ThreadStatesGaugeSet threadStatesGaugeSet(MetricRegistry registry) {        ThreadStatesGaugeSet threadStatesGaugeSet = new ThreadStatesGaugeSet();        registry.register("threads", threadStatesGaugeSet);        return threadStatesGaugeSet;    }}</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Graphite安装"><span class="nav-number">3.1.</span> <span class="nav-text">Graphite安装</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+<div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xlj44400</span>
+  <span id="busuanzi_container_site_pv">
+      total visited<span id="busuanzi_value_site_pv"></span>times
+  </span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+  <!-- custom analytics part create by xiamo -->
+<script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+<script>AV.initialize("tOtFY4fbWJzw1s5bwvtzv6Qj-gzGzoHsz", "p1MQHhpzUqgXy6x2xQezFv4h");</script>
+<script>
+function showTime(Counter) {
+	var query = new AV.Query(Counter);
+	$(".leancloud_visitors").each(function() {
+		var url = $(this).attr("id").trim();
+		query.equalTo("url", url);
+		query.find({
+			success: function(results) {
+				if (results.length == 0) {
+					var content = ' ' + $(document.getElementById(url)).text()+' 0';
+					$(document.getElementById(url)).text(content);
+					return;
+				}
+				for (var i = 0; i < results.length; i++) {
+				  if(i>0) continue;
+					var object = results[i];
+					var str = $(document.getElementById(url)).text();
+					var content =  ' ' + str.replace(/(\d*)/,'')+' '+object.get('time');
+					$(document.getElementById(url)).text(content);
+				}
+			},
+			error: function(object, error) {
+				console.log("Error: " + error.code + " " + error.message);
+			}
+		});
+
+	});
+}
+
+function addCount(Counter) {
+	var Counter = AV.Object.extend("Counter");
+	url = $(".leancloud_visitors").attr('id').trim();
+	title = $(".leancloud_visitors").attr('data-flag-title').trim();
+	var query = new AV.Query(Counter);
+	query.equalTo("url", url);
+	query.find({
+		success: function(results) {
+			if (results.length > 0) {
+				var counter = results[0];
+				counter.fetchWhenSave(true);
+				counter.increment("time");
+				counter.save(null, {
+					success: function(counter) {
+						var content = ' ' + $(document.getElementById(url)).text()+' '+counter.get('time');
+						$(document.getElementById(url)).text(content);
+					},
+					error: function(counter, error) {
+						console.log('Failed to save Visitor num, with error message: ' + error.message);
+					}
+				});
+			} else {
+				var newcounter = new Counter();
+				newcounter.set("title", title);
+				newcounter.set("url", url);
+				newcounter.set("time", 1);
+				newcounter.save(null, {
+					success: function(newcounter) {
+						var content = ' ' + $(document.getElementById(url)).text()+' '+newcounter.get('time');
+						$(document.getElementById(url)).text(content);
+					},
+					error: function(newcounter, error) {
+						console.log('Failed to create');
+					}
+				});
+			}
+		},
+		error: function(error) {
+			console.log('Error:' + error.code + " " + error.message);
+		}
+	});
+}
+$(function() {
+	var Counter = AV.Object.extend("Counter");
+	if ($('.leancloud_visitors').length == 1) {
+		addCount(Counter);
+	} else if ($('.post-title-link').length > 1) {
+		showTime(Counter);
+	}
+});
+</script>
+
+  
+</body>
+</html>
