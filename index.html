@@ -256,6 +256,1097 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://xlj44400.github.io/2018/01/16/Java Vert.x 集成Guice/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xlj44400">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://pic.manqian.cn/2d363401-d913-4d3d-b8fb-1c21f9dacf93?t=1500191019176">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xlj44400'Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/01/16/Java Vert.x 集成Guice/" itemprop="url">Java Vert.x 集成Guice</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-16T13:55:29+08:00">
+                2018-01-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Vert-x-Guice/" itemprop="url" rel="index">
+                    <span itemprop="name">Vert.x Guice</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/01/16/Java Vert.x 集成Guice/" class="leancloud_visitors" data-flag-title="Java Vert.x 集成Guice">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="Guice介绍"><a href="#Guice介绍" class="headerlink" title="Guice介绍"></a>Guice介绍</h3><blockquote>
+<p><a href="https://github.com/google/guice" target="_blank" rel="external">Guice</a>是谷歌推出的一个轻量级依赖注入框架，帮助我们解决Java项目中的依赖注入问题。如果使用过Spring的话，会了解到依赖注入是个非常方便的功能。不过假如只想在项目中使用依赖注入，那么引入Spring未免大材小用了。这时候我们可以考虑使用Guice。本文参考了Guice官方文档，详细信息可以直接查看<a href="https://github.com/google/guice/wiki/InstanceBindings" target="_blank" rel="external">Guice文档</a>。<br><a href="http://www.jianshu.com/p/a648322dc680" target="_blank" rel="external">更多阅读</a></p>
+</blockquote>
+<h3 id="Vert-x"><a href="#Vert-x" class="headerlink" title="Vert.x"></a>Vert.x</h3><blockquote>
+<p>Vert.x是用于开发高度可扩展的非阻塞应用程序的reactive工具集。本文主要介绍vertx与guice的集成，<a href="https://github.com/ltamrazov/vertx-starter-guide/tree/part-3" target="_blank" rel="external">github</a></p>
+</blockquote>
+<h3 id="Vert-x-Guice"><a href="#Vert-x-Guice" class="headerlink" title="Vert.x Guice"></a>Vert.x Guice</h3><blockquote>
+<p> Vert.x还没有内置的依赖注入。由于您无法希望在没有它的情况下开发可维护和可测试的应用程序，所以我们需要一个解决方案，因为我们使用Java，所以该解决方案是Guice。Guice是由Google开发的<a href="https://github.com/google/guice" target="_blank" rel="external">大型依赖注入库</a>。Guice的Vert.x插件已经由ef-labs构建，<a href="https://github.com/ef-labs/vertx-guice" target="_blank" rel="external">在这里找到</a>。对于Guice整合的令人敬畏的工作的所有信用都归功于他们。这篇文章将简单地演示如何将它合并到您的应用程序中。将此依赖项添加到您的项目中：</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">build.gradle:</div><div class="line">compile &apos;com.englishtown.vertx:vertx-guice:2.3.1&apos;</div></pre></td></tr></table></figure>
+<h3 id="Service-Binder"><a href="#Service-Binder" class="headerlink" title="Service Binder"></a>Service Binder</h3><blockquote>
+<p>我们需要做的第一件事是创建一个可以配置Guice来提供我们所有类的绑定器。为此，我们需要创建一个扩展的类AbstractModule。绑定器的工作是告诉Guice如何构建我们需要的所有类，并绑定我们想要用于我们在构造函数中指定的特定接口的实现。看起来像这样：</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">ServiceBinder.java：</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ServiceBinder</span> <span class="keyword">extends</span> <span class="title">AbstractModule</span> </span>&#123; </div><div class="line"></div><div class="line">    <span class="meta">@Provides</span> <span class="meta">@Singleton</span></div><div class="line">     <span class="keyword">public</span> HelloController provideController（Vertx vertx，</div><div class="line">        HelloWorld service）</div><div class="line">    &#123; </div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> HelloController（vertx，service）; </div><div class="line">    &#125; </div><div class="line"></div><div class="line">    <span class="meta">@Provides</span> <span class="meta">@Singleton</span></div><div class="line">     <span class="keyword">public</span> HelloWorld provideService（）&#123; </div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> HelloWorld（）; </div><div class="line">    &#125; </div><div class="line"></div><div class="line">    <span class="meta">@Provides</span> <span class="meta">@Singleton</span></div><div class="line">     <span class="keyword">public</span> AppConfig provideAppConfig（）&#123; </div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> AppConfig（<span class="number">30</span>，<span class="number">30</span>）; </div><div class="line">    &#125; </div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">     <span class="keyword">protected</span> <span class="keyword">void</span> configure（）&#123; </div><div class="line"></div><div class="line">    &#125; </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>该@Provides注解标记的方法作为提供者，@Singleton 表示注入的实例为单例，<br>我们要做的第二件事是覆盖该configure方法。当模块被实例化时，该方法被调用，并且它可以包括任何其他配置。我们实际上可以把我们做的方法的所有配置放在configure方法中，但是我发现它更可读和更方便地实现这些方法，所以我们configure是空的。</p>
+</blockquote>
+<h3 id="Main-Class"><a href="#Main-Class" class="headerlink" title="Main Class"></a>Main Class</h3><blockquote>
+<p>在我们使用<code>ServiceLauncher</code>类来部署我们的verticle之前。这依赖于我们构建Vert.x Launcher类的构建，并将其指向我们<code>ServiceLauncher</code>。这很好，但是如果我们要手动部署我们的verticle，我们需要一个主类。此类将创建一个Vert.x实例，并使用帮助方法使用Guice部署我们的verticle。这是我们的Main：</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line">Main.java:</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</div><div class="line">        Vertx vertx = Vertx.vertx();</div><div class="line">        deploy(vertx, ServiceLauncher.class,</div><div class="line">                                  <span class="keyword">new</span> DeploymentOptions());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> Future&lt;Void&gt; <span class="title">deploy</span><span class="params">(Vertx vertx, Class verticle,</span></span></div><div class="line">        DeploymentOptions opts)</div><div class="line">    &#123;</div><div class="line">        Future&lt;Void&gt; done = Future.future();</div><div class="line">        String deploymentName = <span class="string">"java-guice:"</span> + verticle.getName();</div><div class="line">        JsonObject config = <span class="keyword">new</span> JsonObject()</div><div class="line">                .put(<span class="string">"guice_binder"</span>, ServiceBinder.class.getName());</div><div class="line"></div><div class="line">        opts.setConfig(config);</div><div class="line"></div><div class="line">        vertx.deployVerticle(deploymentName, opts, r -&gt; &#123;</div><div class="line">              <span class="comment">// handle success/failure</span></div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        <span class="keyword">return</span> done;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ServiceLauncher</span> <span class="keyword">extends</span> <span class="title">AbstractVerticle</span></span>&#123;</div><div class="line">        <span class="keyword">private</span> AppConfig appConfig;</div><div class="line">        <span class="meta">@Inject</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="title">ServiceLauncher</span><span class="params">(AppConfig appConfig)</span> </span>&#123;</div><div class="line">            <span class="keyword">this</span>.appConfig = appConfig;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">/**</span></div><div class="line">         * Start method uses CompositeFuture to deploy all required </div><div class="line">         * verticles</div><div class="line">         *</div><div class="line">         * <span class="doctag">@param</span> done</div><div class="line">         */</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">(Future&lt;Void&gt; done)</span> </span>&#123;</div><div class="line">            <span class="comment">// start your verticle here</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ol>
+<li>方法简单地创建一个Vert.x实例，并使用一个辅助方法来部署我们的静态verticle启动器类。<code>Vertx.vertx()</code>也可以选择指定不同的参数，例如实例数。</li>
+<li>接下来是我们的帮助方法，这是集成Guice库的重要部分。我们在这里做的第一件事是通过预先等待修改verticle的名称java-guice。Vert.x允许我们在部署之前创建和注册负责实例化verticle工厂。这个库提供了一个将Guice和名字开头为java-guice的Verticle集成起来的工厂方法。其次，我们在部署选项中指定我们的<code>ServiceBinder</code>，从而让Guice知道在哪里找到它。</li>
+<li>最后是我们的<code>ServiceLauncher</code> 。它与它是一样的，除了构造函数。我们用@InjectGuice注解添加了构造函数。这使得verticle工厂可以实例化此verticle，并让Guice知道注入我们需要的依赖关系。在这种情况下，它只是一个虚拟AppConfig依赖。重要的是要注意，<code>ServiceLauncher</code>还需要使用我们的帮助方法来部署我们的verticle。这是因为您需要指定ServiceBinder并修改您要使用Guice的每个verticle的名称。</li>
+</ol>
+<blockquote>
+<p>现在我们的verticles在任何地方都可以使用Guice依赖注入。我们修改了所有代码以反映这一点，将依赖关系注入到verticles，控制器和我们的服务类中。例如，HelloController构造函数如下所示：</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">@Inject</div><div class="line"> public HelloController（Vertx vertx，HelloWorld service）&#123; </div><div class="line">    this.vertx = vertx; </div><div class="line">    this.service = service; </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>注意</strong>：我们不需要在其中创建Vertx提供者，ServiceBinder因为Vert.x Guice库已经具有Vert.x提供者，它提供了用于部署Verticle的Vert.x实例。</p>
+</blockquote>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><blockquote>
+<p>本系列探讨了使用Vert.x的应用程序架构。我们讨论了高吞吐量单verticle结构，独立可扩展性的多verticle结构，以及依赖注入的Guice集成。</p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://xlj44400.github.io/2018/01/09/如何用kotlin写DSLs/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xlj44400">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://pic.manqian.cn/2d363401-d913-4d3d-b8fb-1c21f9dacf93?t=1500191019176">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xlj44400'Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/01/09/如何用kotlin写DSLs/" itemprop="url">如何用kotlin写DSLs（入门篇）</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-09T13:55:29+08:00">
+                2018-01-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/kotlin/" itemprop="url" rel="index">
+                    <span itemprop="name">kotlin</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/01/09/如何用kotlin写DSLs/" class="leancloud_visitors" data-flag-title="如何用kotlin写DSLs（入门篇）">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Kotlin为开发人员提供了大量的语言功能，使开发人员更加可读，更简洁。我们可以用这些功能做的一件很酷的事情就是设计一个表达性的领域专用语言或DSL</p>
+<h3 id="什么是领域专用语言（domain-specific-language-DSL）？"><a href="#什么是领域专用语言（domain-specific-language-DSL）？" class="headerlink" title="什么是领域专用语言（domain specific language / DSL）？"></a>什么是领域专用语言（domain specific language / DSL）？</h3><p>首先，DSL究竟是什么，我们为什么要使用它们？让我们来看看维基百科对DSL的定义：</p>
+<blockquote>
+<p>领域专用语言（DSL）是专用于一个特定的应用领域的计算机语言。这与通用语言（GPL）形成对比，通用语言（GPL）广泛适用于各个领域。</p>
+</blockquote>
+<p>基本上，DSL是一种专注于应用程序某一特定部分的语言。另一方面，通用语言（如Kotlin或Java）可用于一个应用程序的多个部分。有几种我们已经熟悉的特定于领域的语言，例如SQL。如果我们看一下SQL中的一个语句，我们注意到它几乎就像一个英文句子，使得它具有表达性和可读性：</p>
+<blockquote>
+<p>SELECT Person.name，Person.age FROM Person ORDER BY Person.age DESC</p>
+</blockquote>
+<p>没有具体的标准来区分DSL和普通的API，但大多数时候我们看到一个区别：使用某种结构或语法。这使得代码更易于理解，不仅对于开发人员而且对于技术含量较低的人员来说也更易于理解。</p>
+<h3 id="DSL与Kotlin"><a href="#DSL与Kotlin" class="headerlink" title="DSL与Kotlin"></a>DSL与Kotlin</h3><p><code>现在，我们如何利用Kotlin的语言特性来创建DSL，并为我们带来了哪些优势？</code></p>
+<blockquote>
+<p>当我们使用另一种通用编程语言（如Kotlin）创建DSL时，我们实际上正在讨论内部DSL。我们没有创建独立的语法，但是我们正在设置一个使用现有语言的特定方法。这给了我们使用我们已经知道的代码的优点，并允许我们将其他Kotlin语句（如for循环）添加到我们的DSL。</p>
+</blockquote>
+<p>除此之外，Kotlin提供了几种方法来创建更清晰的语法，避免使用太多不必要的符号。在本文，我们将重点介绍三个特定功能：</p>
+<ol>
+<li>在方法括号外使用<code>Lambda</code></li>
+<li>带接受者的<code>Lambda</code></li>
+<li>扩展函数</li>
+</ol>
+<p>我们继续这些例子的时候，这些的使用会在一分钟内变得更加清晰。</p>
+<p>为了使一切都可以理解，我将使用一个简单的模型来创建我们的DSL。我们不应该在创建任何类的时候创建DSL。这将是一个不必要的工作。使用DSL的好地方可以是配置类或者库接口，用户不需要知道模型。</p>
+<h3 id="来写我们的第一个DSL"><a href="#来写我们的第一个DSL" class="headerlink" title="来写我们的第一个DSL"></a>来写我们的第一个DSL</h3><p>在这部分我们将创建一个简单的DSL，它能够实例化Person类的一个对象。请注意，这仅仅是一个例子。以下是本教程结束时的一个示例。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">val person = person &#123;</div><div class="line">    name = <span class="string">"John"</span></div><div class="line">    age = <span class="number">25</span></div><div class="line">    address &#123;</div><div class="line">        street = <span class="string">"Main Street"</span></div><div class="line">        number = <span class="number">42</span></div><div class="line">        city = <span class="string">"London"</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>正如你所看到的，上面的代码是非常容易理解的。即使没有开发者经验的人也可以阅读，甚至做出调整。为了了解我们如何到达那里，我们将采取几个步骤。这是我们要准备的模型：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function">data class <span class="title">Person</span><span class="params">(var name: String? = <span class="keyword">null</span>,</span></span></div><div class="line">                  var age: Int? = <span class="keyword">null</span>,</div><div class="line">                  var address: Address? = <span class="keyword">null</span>)</div><div class="line"></div><div class="line"></div><div class="line">data class <span class="title">Address</span><span class="params">(var street: String? = <span class="keyword">null</span>,</span></div><div class="line">                   var number: Int? = <span class="keyword">null</span>,</div><div class="line">                   var city: String? = <span class="keyword">null</span>)</div></pre></td></tr></table></figure>
+<p>很显然，这不是最后想要的优雅模型。最终我们希望拥有不可变的<code>vals</code>。我们将在后续部分中介绍这一点。</p>
+<p>现在要做的第一件事就是创建一个新文件，将保持DSL与模型中的实际类分离。首先为Person类创建一些构造函数。看看我们想要的结果，看到Person的属性是在代码块中定义的。这些花括号实际上是定义一个lambda。这就是使用上面提到的三种Kotlin语言特征中的第一种语言特征的地方：<strong>在方法括号外使用<code>Lambda</code></strong>。</p>
+<p>如果一个函数的最后一个参数是一个lambda，可以把它放在方法括号之外。而当你只有一个lambda作为参数时，你可以省略整个括号。<code>person {…}</code>实际上与<code>person({…})</code>相同。这在我们的DSL中变得更简洁。现在来编写person函数的第一个版本。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function">fun <span class="title">person</span><span class="params">(block: (Person)</span> -&gt; Unit): Person </span>&#123;</div><div class="line">    val p = Person()</div><div class="line">    block(p)</div><div class="line">    <span class="keyword">return</span> p</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>所以在这里我们有一个创建一个Person对象的函数。它需要一个带有我们在第2行创建的对象的lambda。当在第3行执行这个lambda时，我们期望在返回第4行的对象之前，该对象获得它所需要的属性。下面展示如何使用这个函数：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">val person = person &#123;</div><div class="line">    it.name = <span class="string">"John"</span></div><div class="line">    it.age = <span class="number">25</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>由于这个lambda只接收一个参数，可以用它来调用person对象。这看起来不错，但还不够完美，如果在我们的DSL看到的东西。特别是当我们要在那里添加额外的对象层。这带来了我们接下来提到的Kotlin功能：带接受者的<code>Lambda</code>。</p>
+<p>在person函数的定义中，可以给<code>lambda</code>添加一个接收者。这样只能在<code>lambda</code>中访问那个接收器的函数。由于lambda中的函数在接收者的范围内，则可以简单地在接收者上执行lambda，而不是将其作为参数提供。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function">fun <span class="title">person</span><span class="params">(block: Person.()</span> -&gt; Unit): Person </span>&#123;</div><div class="line">    val p = Person()</div><div class="line">    p.block()</div><div class="line">    <span class="keyword">return</span> p</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这实际上可以通过使用Kotlin提供的apply函数在一个简单的单行程中重写。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function">fun <span class="title">person</span><span class="params">(block: Person.()</span> -&gt; Unit): Person </span>= Person().apply(block)</div></pre></td></tr></table></figure>
+<p>现在可以将其从DSL中删除:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">val person = person &#123;</div><div class="line">    name = <span class="string">"John"</span></div><div class="line">    age = <span class="number">25</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>到目前为止，还差一个Address类，在我们想要的结果中，它看起来很像刚刚创建的person函数。唯一的区别是必须将它分配给Person对象的Address属性。为此，可以使用上面提到的三个Kotlin语言功能中的最后一个：扩展函数。</p>
+<p>扩展函数能够向类中添加函数，而无需访问类本身的源代码。这是创建Address对象的完美选择，并直接将其分配给Person的地址属性。这是Dsl文件的最终版本：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function">fun <span class="title">person</span><span class="params">(block: Person.()</span> -&gt; Unit): Person </span>= Person().apply(block)</div><div class="line"></div><div class="line">fun Person.address(block: Address.() -&gt; Unit) &#123;</div><div class="line">    address = Address().apply(block)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>现在为Person添加一个地址函数，它接受一个Address作为接收者的lambda表达式，就像对person构造函数所做的那样。然后它将创建的Address对象设置为Person的属性：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">val person = person &#123;</div><div class="line">    name = <span class="string">"John"</span></div><div class="line">    age = <span class="number">25</span></div><div class="line">    address &#123;</div><div class="line">        street = <span class="string">"Main Street"</span></div><div class="line">        number = <span class="number">42</span></div><div class="line">        city = <span class="string">"London"</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>创建dsl其实也就是这么简单的</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://xlj44400.github.io/2018/01/03/kotlin编写dsl进阶/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xlj44400">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://pic.manqian.cn/2d363401-d913-4d3d-b8fb-1c21f9dacf93?t=1500191019176">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xlj44400'Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/01/03/kotlin编写dsl进阶/" itemprop="url">如何用kotlin写DSL（进阶篇）</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-03T13:55:29+08:00">
+                2018-01-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/kotlin/" itemprop="url" rel="index">
+                    <span itemprop="name">kotlin</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/01/03/kotlin编写dsl进阶/" class="leancloud_visitors" data-flag-title="如何用kotlin写DSL（进阶篇）">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在“如何用kotlin写DSL”中，我们将继续上一篇。在这里我们做了一个非常简单的领域专用语言来初始化一个具有Address属性的Person对象。现在，这可能不是开发者应该在现实生活中创建DSL的东西。应该使用DSL来降低复杂性并提高可读性。在我们创建的DSL中没有太多附加东西。不过，这是一个简单的例子，我们将继续从这里解释接下来要做的三件事情：</p>
+<ul>
+<li><strong>构建器模式</strong></li>
+<li><strong>构造集合</strong></li>
+<li><strong>使用DslMarker缩小作用域</strong></li>
+</ul>
+<p>之后，我将通过为<code>GsonBuilder</code>创建一个DSL来展示一个真实的例子。</p>
+<h3 id="应用构造器模式"><a href="#应用构造器模式" class="headerlink" title="应用构造器模式"></a>应用构造器模式</h3><p>所以在前面的部分我们有2个非常基本的数据类，这对于开始的例子是有好处的。但是类有可变的变量，可以很容易地改变它的属性。如果我们可以将它改为不可变的val，会得到一个编译错误，说Val不能被重新分配。为了避免这种情况，可以创建一个类的构建器。可以看看这个模型：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function">data class <span class="title">Person</span><span class="params">(val name: String,</span></span></div><div class="line">                  val dateOfBirth: Date,</div><div class="line">                  var address: Address?)</div><div class="line"></div><div class="line">data class <span class="title">Address</span><span class="params">(val street: String,</span></div><div class="line">                   val number: Int,</div><div class="line">                   val city: String)</div></pre></td></tr></table></figure>
+<p>如果想要创建这些对象，必须使用他们的构造函数的属性值。正如你所看到的，我也添加了一个<code>Date</code>属性。这个将在稍后讨论。</p>
+<p>我们要写的构造器非常简单。他们只会构建数据，最后调用构建函数，通过构造函数创建对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="function">fun <span class="title">person</span><span class="params">(block: PersonBuilder.()</span> -&gt; Unit): Person </span>= PersonBuilder().apply(block).build()</div><div class="line"></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">PersonBuilder</span> </span>&#123;</div><div class="line">  </div><div class="line">    var name: String = <span class="string">""</span></div><div class="line"></div><div class="line">    <span class="keyword">private</span> var dob: Date = Date()</div><div class="line">    var dateOfBirth: String = <span class="string">""</span></div><div class="line">        set(value) &#123;</div><div class="line">            dob = SimpleDateFormat(<span class="string">"yyyy-MM-dd"</span>).parse(value)</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> var address: Address? = <span class="function"><span class="keyword">null</span></span></div><div class="line"></div><div class="line">    fun <span class="title">address</span><span class="params">(block: AddressBuilder.()</span> -&gt; Unit) &#123;</div><div class="line">        address = AddressBuilder().apply(block).build()</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function">fun <span class="title">build</span><span class="params">()</span>: Person </span>= Person(name, dob, address)</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">AddressBuilder</span> </span>&#123;</div><div class="line"></div><div class="line">    var street: String = <span class="string">""</span></div><div class="line">    var number: Int = <span class="number">0</span></div><div class="line">    var city: String = <span class="string">""</span></div><div class="line"></div><div class="line">    <span class="function">fun <span class="title">build</span><span class="params">()</span> : Address </span>= Address(street, number, city)</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如你看到的。我已经添加了一个额外的字符串属性<code>dateOfBirth</code>并使<code>dob</code>私有属性与自定义<code>setter</code>方法，所以我们可以用一个更可读的方式设置日期。因为我们使用的是构造器，所以我们掌握了更多的东西。结果如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">val person = person &#123;</div><div class="line">    name = <span class="string">"John"</span></div><div class="line">    dateOfBirth = <span class="string">"1980-12-01"</span></div><div class="line">    address &#123;</div><div class="line">        street = <span class="string">"Main Street"</span></div><div class="line">        number = <span class="number">12</span></div><div class="line">        city = <span class="string">"London"</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="关于集合"><a href="#关于集合" class="headerlink" title="关于集合"></a>关于集合</h3><p>现在我们有了这些构建器，让我们添加一个<code>Collection</code>到我们的模型中。例如，从现在开始，一个人可以有多个地址，这些地址存储在一个<code>List&lt;Address&gt;</code>中。这很容易。我们只需将构建器中的地址属性更改为<code>MutableList&lt;Address&gt;</code>，然后在地址函数中添加一个新地址，并将<code>List</code>传递给构造函数。变化如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function">data class <span class="title">Person</span><span class="params">(val name: String,</span></span></div><div class="line">                  val dateOfBirth: Date,</div><div class="line">                  val addresses: List&lt;Address&gt;)</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">class PersonBuilder &#123;</div><div class="line">  </div><div class="line">  // ... other properties</div><div class="line">  </div><div class="line">  private val addresses = mutableListOf&lt;Address&gt;()</div><div class="line"></div><div class="line">  fun address(block: AddressBuilder.() -&gt; Unit) &#123;</div><div class="line">      addresses.add(AddressBuilder().apply(block).build())</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  fun build(): Person = Person(name, dob, addresses)</div><div class="line">  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// And the result</span></div><div class="line">val person = person &#123;</div><div class="line">    name = <span class="string">"John"</span></div><div class="line">    dateOfBirth = <span class="string">"1980-12-01"</span></div><div class="line">    address &#123;</div><div class="line">        street = <span class="string">"Main Street"</span></div><div class="line">        number = <span class="number">12</span></div><div class="line">        city = <span class="string">"London"</span></div><div class="line">    &#125;</div><div class="line">    address &#123;</div><div class="line">        street = <span class="string">"Dev Avenue"</span></div><div class="line">        number = <span class="number">42</span></div><div class="line">        city = <span class="string">"Paris"</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>所以这很简单。但也许我们不喜欢我们的DSL，我们更希望在地址块内看到它</p>
+<p>要做到这一点，可以创建一个地址辅助类。通过这样做，<br>我们可以把它作为提供在<code>PersonBuilder</code>地址函数<code>lambda</code>的接收器。我已经通过ArrayList扩展了这个辅助类，所以它很容易地添加地址对象。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">fun person(block: PersonBuilder.() -&gt; Unit): Person = PersonBuilder().apply(block).build()</div><div class="line"></div><div class="line">class PersonBuilder &#123;</div><div class="line"></div><div class="line">    var name: String = ""</div><div class="line">    private var dob: Date = Date()</div><div class="line">    var dateOfBirth: String = ""</div><div class="line">        set(value) &#123; dob = SimpleDateFormat("yyyy-MM-dd").parse(value) &#125;</div><div class="line"></div><div class="line">    private val addresses = mutableListOf&lt;Address&gt;()</div><div class="line"></div><div class="line">    fun addresses(block: ADDRESSES.() -&gt; Unit) &#123;</div><div class="line">        addresses.addAll(ADDRESSES().apply(block))</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    fun build(): Person = Person(name, dob, addresses)</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line">class ADDRESSES: ArrayList&lt;Address&gt;() &#123;</div><div class="line"></div><div class="line">    fun address(block: AddressBuilder.() -&gt; Unit) &#123;</div><div class="line">        add(AddressBuilder().apply(block).build())</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line">class AddressBuilder &#123;</div><div class="line"></div><div class="line">    var street: String = ""</div><div class="line">    var number: Int = 0</div><div class="line">    var city: String = ""</div><div class="line"></div><div class="line">    fun build() : Address = Address(street, number, city)</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>为了强调这只是一个辅助类，可以用大写字母命名。这在DSL中将不可见。这将得到了一个很好的结构。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">val person = person &#123;</div><div class="line">    name = <span class="string">"John"</span></div><div class="line">    dateOfBirth = <span class="string">"1980-12-01"</span></div><div class="line">    addresses &#123;</div><div class="line">        address &#123;</div><div class="line">            street = <span class="string">"Main Street"</span></div><div class="line">            number = <span class="number">12</span></div><div class="line">            city = <span class="string">"London"</span></div><div class="line">        &#125;</div><div class="line">        address &#123;</div><div class="line">            street = <span class="string">"Dev Avenue"</span></div><div class="line">            number = <span class="number">42</span></div><div class="line">            city = <span class="string">"Paris"</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="缩小作用域"><a href="#缩小作用域" class="headerlink" title="缩小作用域"></a>缩小作用域</h3><p>这个结果看起来不错。它的可读性，可维护性和使用安全性得益于带有接收者的lambda表达式。但是有一个问题</p>
+<p>因使用DSL时，可能会遇到上下文中可以调用太多函数的问题。 我们可以调用 <code>lambda</code> 表达式内部每个可用的隐式接收者的方法，因此得到一个不一致的结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">val person = person &#123;</div><div class="line">    name = <span class="string">"John"</span></div><div class="line">    dateOfBirth = <span class="string">"1980-12-01"</span></div><div class="line">    addresses &#123;</div><div class="line">        address &#123;</div><div class="line">            addresses &#123; </div><div class="line">                name = <span class="string">"Mary"</span></div><div class="line">            &#125;</div><div class="line">            street = <span class="string">"Dev Avenue"</span></div><div class="line">            number = <span class="number">42</span></div><div class="line">            city = <span class="string">"Paris"</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如果我们运行这个，person.name是“Mary”，而不是“John”。幸运的是，从Kotlin 1.1开始，我们可以通过<code>@DslMarker</code>注释来避免这种情况。这个注解应该被应用到一个自定义的注释类，然后你注释你的DSL类。</p>
+<p>在添加了这个注解之后，Kotlin 编译器就知道哪些隐式接收者是同一个 DSL 的一部分，并且只允许调用最近层的接收者的成员</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">@DslMarker</div><div class="line">annotation class PersonDsl</div><div class="line"></div><div class="line">@PersonDsl</div><div class="line">class PersonBuilder &#123;</div><div class="line">  //...</div><div class="line">&#125;</div><div class="line"></div><div class="line">@PersonDsl</div><div class="line">class ADDRESSES: ArrayList&lt;Address&gt;() &#123;</div><div class="line">  //...</div><div class="line">&#125;</div><div class="line"></div><div class="line">@PersonDsl</div><div class="line">class AddressBuilder &#123;</div><div class="line">  //...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>现在编译器给了最后一个例子的一个错误。地址和名称不能在这个上下文中由隐式接收器调用。如果想要的话，仍然可以在内部lambda表达式中使用一个显式的接收者：<code>this@person.name = “Mary”</code></p>
+<h3 id="实例：简化GsonBuilder"><a href="#实例：简化GsonBuilder" class="headerlink" title="实例：简化GsonBuilder"></a>实例：简化GsonBuilder</h3><p>在这最后一个例子中，我将展示一个快速的例子，我已经创建了自己的内部DSL，用于一个真实的例子：GsonBuilder</p>
+<p>如果你想创建一个序列化和反序列化的gson实例，库已经为你提供了一个GsonBuilder来轻松的配置实例。但是，如果您想跳过（de）序列化字段或类。它变得相当混乱。以这个例子</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">val gson = GsonBuilder()</div><div class="line">          .addDeserializationExclusionStrategy(object: ExclusionStrategy &#123;</div><div class="line">              override fun shouldSkipClass(clazz: Class&lt;*&gt;?): Boolean &#123;</div><div class="line">                  return clazz?.equals(Address::class.java) ?: false</div><div class="line">              &#125;</div><div class="line"></div><div class="line">              override fun shouldSkipField(f: FieldAttributes?): Boolean &#123;</div><div class="line">                  return f?.let &#123; it.name == "internalId" &#125; ?: false</div><div class="line">              &#125;</div><div class="line"></div><div class="line">          &#125;)</div><div class="line">          .addSerializationExclusionStrategy(object: ExclusionStrategy &#123;</div><div class="line">              override fun shouldSkipClass(clazz: Class&lt;*&gt;?): Boolean &#123;</div><div class="line">                  return false</div><div class="line">              &#125;</div><div class="line"></div><div class="line">              override fun shouldSkipField(f: FieldAttributes?): Boolean &#123;</div><div class="line">                  return f?.let &#123; it.declaringClass == Person::class.java &amp;&amp; it.name == "address" &#125; ?: false</div><div class="line">              &#125;</div><div class="line"></div><div class="line">          &#125;)</div><div class="line">          .serializeNulls()</div><div class="line">          .create()</div></pre></td></tr></table></figure>
+<p>这个<code>Gson</code>对象排除了反序列化的<code>Address</code>类和任何名为<code>internalId</code>的字段。它也排除了序列化<code>Person.address</code>。问题在于它的可读性。</p>
+<p>即使函数名<code>addDeserializationExlusionStrategy</code>看起来很简单。但由于Kotlin的特性，比如elvis操作符  <code>？：</code>这已经比Java中的要短，但我们可以做得更好。<br>通过使用我们在本文最后两部分中讨论的Kotlin语言功能，我们能够创建一个DSL，并具有相同的代码，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">val  gson  = gson &#123;</div><div class="line">    dontDeserialize &#123;</div><div class="line">        whenField &#123;name ==  “ internalId ” &#125;</div><div class="line">        whenClass &#123;等号（地址::类。 JAVA）&#125;</div><div class="line">    &#125;</div><div class="line">    dontSerialize &#123;</div><div class="line">        whenField &#123;declaringClass == Person :: <span class="class"><span class="keyword">class</span>。<span class="title">java</span> &amp;&amp; <span class="title">name</span> </span>==“ address ”&#125;</div><div class="line">    &#125;</div><div class="line">    serializeNulls（）</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>结果是更可读，更易理解和更简洁。看看如何实现的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="function">fun <span class="title">gson</span><span class="params">(block: GsonBuilder.()</span> -&gt; Unit): Gson </span>= GsonBuilder().apply(block).create()</div><div class="line"></div><div class="line">fun GsonBuilder.dontDeserialize(block: ExclusionStrategyBuilder.() -&gt; Unit) &#123;</div><div class="line">    val strategy = ExclusionStrategyBuilder().apply(block).build()</div><div class="line">    <span class="keyword">this</span>.addDeserializationExclusionStrategy(strategy)</div><div class="line">&#125;</div><div class="line"></div><div class="line">fun GsonBuilder.dontSerialize(block: ExclusionStrategyBuilder.() -&gt; Unit) &#123;</div><div class="line">    val strategy = ExclusionStrategyBuilder().apply(block).build()</div><div class="line">    <span class="keyword">this</span>.addSerializationExclusionStrategy(strategy)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ExclusionStrategyBuilder</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> var field: (FieldAttributes) -&gt; Boolean = &#123; <span class="keyword">false</span> &#125;</div><div class="line">    <span class="keyword">private</span> var clazz: (Class&lt;*&gt;) -&gt; Boolean? = &#123; <span class="keyword">false</span> &#125;</div><div class="line"></div><div class="line">    <span class="function">fun <span class="title">whenField</span><span class="params">(block: FieldAttributes.()</span> -&gt; Boolean) </span>&#123;</div><div class="line">        field = block</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function">fun <span class="title">whenClass</span><span class="params">(block: Class&lt;*&gt;.()</span> -&gt; Boolean) </span>&#123;</div><div class="line">        clazz = block</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function">fun <span class="title">build</span><span class="params">()</span>: ExclusionStrategy </span>&#123;</div><div class="line">        <span class="keyword">return</span> object : ExclusionStrategy &#123;</div><div class="line">            <span class="function">override fun <span class="title">shouldSkipClass</span><span class="params">(clazz: Class&lt;*&gt;?)</span>: Boolean </span>&#123;</div><div class="line">                <span class="keyword">return</span> clazz?.let &#123; clazz(it) &#125; ?: <span class="keyword">false</span></div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="function">override fun <span class="title">shouldSkipField</span><span class="params">(f: FieldAttributes?)</span>: Boolean </span>&#123;</div><div class="line">                <span class="keyword">return</span> f?.let &#123; field(it) &#125; ?: <span class="keyword">false</span></div><div class="line">            &#125;</div><div class="line"></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>不幸的是，现在无法在这里添加<code>@DslMarker</code>注解。<code>GsonBuilder</code>是不可变的，也不能扩展它。尽管如此，这使得构建Gson实例变得更加容易。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://xlj44400.github.io/2017/12/16/jawr/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xlj44400">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://pic.manqian.cn/2d363401-d913-4d3d-b8fb-1c21f9dacf93?t=1500191019176">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xlj44400'Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/12/16/jawr/" itemprop="url">基于jawr的springboot+springmvc+thymeleaf的web静态文件压缩方案</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-16T13:55:29+08:00">
+                2017-12-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/springboot-jawr/" itemprop="url" rel="index">
+                    <span itemprop="name">springboot jawr</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/12/16/jawr/" class="leancloud_visitors" data-flag-title="基于jawr的springboot+springmvc+thymeleaf的web静态文件压缩方案">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><strong>1. 主要用到的依赖：</strong></p>
+<pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&lt;dependency&gt;</div><div class="line">          &lt;groupId&gt;com.github.dtrunk90&lt;/groupId&gt;</div><div class="line">          &lt;artifactId&gt;thymeleaf-jawr-extension&lt;/artifactId&gt;</div><div class="line">          &lt;version&gt;2.0.2&lt;/version&gt;</div><div class="line">      &lt;/dependency&gt;</div><div class="line">      &lt;dependency&gt;</div><div class="line">          &lt;groupId&gt;net.jawr&lt;/groupId&gt;</div><div class="line">          &lt;artifactId&gt;jawr-core&lt;/artifactId&gt;</div><div class="line">          &lt;version&gt;3.9&lt;/version&gt;</div><div class="line">      &lt;/dependency&gt;</div></pre></td></tr></table></figure>
+</code></pre><p><strong>2. 与spring集成example可参考：</strong><br><code>https://github.com/j-a-w-r/jawr-spring/tree/master/jawr-spring-extension</code></p>
+<p><strong>3. jawr core源码分析：</strong></p>
+<p>主要通过<code>JawrSpringController</code>初始化<code>JawrRequestHandler</code>，这个handler是整个静态文件压缩初始化的入口</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">public JawrRequestHandler(ServletContext context, Map&lt;String, Object&gt; initParams, Properties configProps)</div><div class="line">throws ServletException &#123;</div><div class="line"></div><div class="line">	this.initParameters = initParams;</div><div class="line">	initRequestHandler(context, configProps);</div><div class="line">&#125;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Initialize the request handler</div><div class="line"> * </div><div class="line"> * @param context</div><div class="line"> *            the servlet context</div><div class="line"> * @param configProps</div><div class="line"> *            the configuration properties</div><div class="line"> * @throws ServletException</div><div class="line"> *             if an exception occurs</div><div class="line"> */</div><div class="line">private void initRequestHandler(ServletContext context, Properties configProps) throws ServletException &#123;｝</div></pre></td></tr></table></figure>
+<p><strong>initRequestHandler 调用</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">rotected void initializeJawrContext(Properties props) throws ServletException</div><div class="line"></div><div class="line">// Initialize config</div><div class="line">initializeJawrConfig(props);</div><div class="line"></div><div class="line">bundlesHandler = factory.buildResourceBundlesHandler();</div><div class="line"></div><div class="line">//PropertiesBasedBundlesHandlerFactory</div><div class="line">public ResourceBundlesHandler buildResourceBundlesHandler()</div><div class="line">			throws DuplicateBundlePathException, BundleDependencyException &#123;</div><div class="line">		return factory.buildResourceBundlesHandler();</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">// BundlesHandlerFactory	</div><div class="line">public ResourceBundlesHandler buildResourceBundlesHandler()</div><div class="line">			throws DuplicateBundlePathException, BundleDependencyException&#123;</div><div class="line">			</div><div class="line">			...</div><div class="line">			</div><div class="line">			// Use the cached proxy if specified when debug mode is off.</div><div class="line">		if (useCacheManager &amp;&amp; !jawrConfig.isDebugModeOn())</div><div class="line">			collector = new CachedResourceBundlesHandler(collector);</div><div class="line">		//这里是初始化入口</div><div class="line">		collector.initAllBundles();</div><div class="line">		return collector;</div><div class="line">		</div><div class="line">			&#125;</div></pre></td></tr></table></figure>
+<p><strong>压缩后的临时文件的存放目录</strong><br><code>AbstractResourceBundleHandler</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">/** The path of the temporary working directory */</div><div class="line">protected String tempDirPath;</div><div class="line"></div><div class="line">/** The path of the directory which contain the bundles in text format */</div><div class="line">protected String textDirPath;</div><div class="line"></div><div class="line">/** The path of the directory which contain the bundles in gzip format */</div><div class="line">protected String gzipDirPath;</div></pre></td></tr></table></figure>
+<p><strong>tempDirPath 路径：javax.servlet.context.tempdir 的目录</strong></p>
+<p><strong>4.集成spring boot</strong></p>
+<p>jawr的配置文件：放到<code>aplication.properties</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">##### Common properties #####</div><div class="line">jawr.debug.on=false</div><div class="line">＃gzip压缩</div><div class="line">jawr.gzip.on=true</div><div class="line">jawr.gzip.ie6.on=false</div><div class="line">jawr.charset.name=UTF-8</div><div class="line">#使用md5生成hashcode</div><div class="line">jawr.bundle.hashcode.generator=MD5</div><div class="line">jawr.use.generator.cache=false</div><div class="line">jawr.use.smart.bundling=true</div><div class="line">jawr.use.bundle.mapping=true</div><div class="line"></div><div class="line"></div><div class="line"># JAVASCRIPT properties and mappings</div><div class="line">#压缩文件目录 也就是上面tempDirPath路径下的 /js 子目录</div><div class="line">jawr.js.bundle.basedir=/js</div><div class="line">jawr.js.bundle.bundlepostprocessors=JSMin</div><div class="line"></div><div class="line">#id 是标签src属性用的  mappings是静态文件路径</div><div class="line">#id 格式必须是jawr.js.bundle.名字.id 的格式</div><div class="line"># 路径映射 jawr.js.bundle.名字.mappings</div><div class="line"># jar:static/js/jquery-1.9.1.min.js jar:后面是静态文件路径 也就是web项目根目录下的 static 目录</div><div class="line"># 多个路径用逗号分开 jar:static/js/addRead.js,jar:static/js/pc_detail.js</div><div class="line">jawr.js.bundle.jquery.id= bundleid</div><div class="line">jawr.js.bundle.jquery.mappings=jar:static/js/jquery-1.9.1.min.js</div><div class="line"></div><div class="line"></div><div class="line"># CSS properties and mappings</div><div class="line">jawr.css.bundle.basedir=/css</div><div class="line">jawr.css.bundle.bundlepostprocessors=cssminify,base64ImageEncoder</div><div class="line">jawr.css.bundle.filepostprocessors=base64ImageEncoder</div><div class="line"></div><div class="line">jawr.css.bundle.pcindex.id= bundleid</div><div class="line">jawr.css.bundle.pcindex.mappings=jar:static/css/index.css</div></pre></td></tr></table></figure>
+<p><strong>5.集成thymeleaf</strong></p>
+<p>依赖扩展:<code>thymeleaf-jawr-extension</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">// src 就是 上面配置的 bundleid</div><div class="line">&lt;script jawr:src=&quot;bundleid&quot;&gt;&lt;/script&gt;</div></pre></td></tr></table></figure>
+<p><strong>主要优势：</strong></p>
+<ol>
+<li><p>对网络交互的数据进行压缩，比如对JS，CSS，图片等。通过去除空行，空格，换行符，注释，变量名混淆可以大大减少JS和CSS文件大小。常用的压缩工具有JSMin, YuiCompressor,Packer，Microsoft Ajax Minifier和UglifyJS。对于第三方的JS，我们可以预先对其压缩。但对于自己开发的JS，为了可读性和可维护性，我们只能在项目部署的时候压缩。JAWR默认的JS压缩器为JSMIN，CSS的压缩器为CSS Compressor，可选的配置为YuiCompressor(支持JS和CSS)。</p>
+</li>
+<li><p>可以合并所有的JS文件，合并所有的CSS文件。我们知道浏览器下载一个10K的文件，比下载10个1K的文件的速度要快很多，因为浏览器和服务端每次交互都会发送Request Header，服务器响应也会有Response Header，另外下载一个文件只需要建立一次网络连接，而10个文件则要建立10次网络连接，这个比较耗时。</p>
+</li>
+<li><p>对图片Base64编码嵌入HTML页面。减少网络交互次数。</p>
+</li>
+<li><p>应用启动时压缩静态文件，静态文件可以用hash索引，发生变化的文件才会改变hash便于缓存，<br>生产和开发环境可以通过<code>jawr.debug.on=false</code>配置就行了</p>
+</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://xlj44400.github.io/2017/12/11/KotlinConf2017概要/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xlj44400">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://pic.manqian.cn/2d363401-d913-4d3d-b8fb-1c21f9dacf93?t=1500191019176">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xlj44400'Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/12/11/KotlinConf2017概要/" itemprop="url">KotlinConf2017概要</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-11T13:55:29+08:00">
+                2017-12-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/kotlin/" itemprop="url" rel="index">
+                    <span itemprop="name">kotlin</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/12/11/KotlinConf2017概要/" class="leancloud_visitors" data-flag-title="KotlinConf2017概要">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="kotlin1-2-RC"><a href="#kotlin1-2-RC" class="headerlink" title="kotlin1.2 RC"></a>kotlin1.2 RC</h3><blockquote>
+<p>主题演讲的第一个重要声明是发布<strong>Kotlin 1.2 Release Candidate</strong>。此版本中的新功能包括对<a href="http://kotlinlang.org/docs/reference/multiplatform.html" target="_blank" rel="external"><strong>多平台项目</strong></a>的实验支持，允许您在面向JVM和JavaScript的模块之间共享代码，以及<strong>多种语言改进</strong>，包括对注解中的数组字面值的支持。有关1.2中的新功能的更多信息，请查看<a href="https://blog.jetbrains.com/kotlin/2017/09/kotlin-1-2-beta-is-out/" target="_blank" rel="external">Kotlin 1.2 Beta</a>公告博客文章。</p>
+<p>现在编译器拒绝使用早期版本的Kotlin 1.2编译的二进制文件; 您将需要使用此版本重新编译它们。使用Kotlin 1.0.x或1.1.x编译的代码当然与本版本的编译器完全兼容。</p>
+<p>尽管协程仍被标记为实验功能，但我们想澄清这种状态的确切含义。协程完全可以在<strong>生产环境</strong>中使用，我们在自己的开发中使用它们，并且我们没有遇到任何重大问题。我们保持实验状态的原因是它使我们有能力迭代设计。请注意，即使我们对API进行了更改，当前的API仍将被支持，即使它被标记为已被弃用，我们将提供必要的<strong>迁移工具</strong>。根据我们目前的计划，在kotlin1.3中将删除协程的实验状态。</p>
+<p>现在是我们要求你帮忙的时候了。尽管我们在内部和JetBrains的其他团队进行了大量的测试，但现实世界的范围远远大于我们所能接触到的。因此，请给Kotlin 1.2 RC一个尝试你自己的项目，让我们知道如果你遇到任何问题。您的帮助对于确保顺利的最终发布至关重要。<br>告诉大家去试试看</p>
+</blockquote>
+<h3 id="Kotlin-Native-iOS支持"><a href="#Kotlin-Native-iOS支持" class="headerlink" title="Kotlin / Native iOS支持"></a>Kotlin / Native iOS支持</h3><blockquote>
+<p>我们宣布的下一个大新闻是支持<strong>使用Kotlin / Native的iOS开发</strong>，作为Kotlin / Native 0.4的一部分发布。这个支持还处于早期阶段，但它仍然在这里，这是我们在所有平台上启用Kotlin开发的重要一步。</p>
+<p>为了显示可能的事情，我们写了两个应用程序并发布到App Store：</p>
+<p>在<a href="https://itunes.apple.com/us/app/kotlinconf-spinner/id1291282375?mt=8" target="_blank" rel="external">spinner示例应用</a>（<a href="https://github.com/jetbrains/kotlinconf-spinner" target="_blank" rel="external">GitHub</a>）是使用OpenGL构建了一个简单的游戏。它在iOS和Android（<a href="https://play.google.com/store/apps/details?id=com.jetbrains.konan_activity2" target="_blank" rel="external">play store</a>）上运行，大多数代码在两个版本之间共享。iOS版本有几个附加功能，如游戏中心集成。<br>该<a href="https://itunes.apple.com/us/app/kotlinconf/id1299196584?mt=8" target="_blank" rel="external">KotlinConf appstore</a>（GitHub上）展示了本次会议的日程安排，与UIKit的内置全机iOS UI。<br>这两个示例应用都是开源的，您可以使用它们作为模板，在纯Kotlin中构建自己的跨平台移动应用。</p>
+</blockquote>
+<h3 id="Kotlin-Native-IDE支持"><a href="#Kotlin-Native-IDE支持" class="headerlink" title="Kotlin / Native IDE支持"></a>Kotlin / Native IDE支持</h3><p>当然，开发任何语言都需要一个IDE，所以从今天开始，Kotlin / Native有了IDE支持。<br>我们现在正在为<strong>Cion C / C ++</strong> IDE的<strong>CLion</strong>发布Kotlin / Native插件的初始预览版本。该插件支持<strong>CMake</strong>作为构建系统。它包括IntelliJ IDEA的Kotlin插件的全套代码编辑功能，以及初步支持项目创建，测试和调试。</p>
+<p><img src="https://d3nmt5vlzunoa1.cloudfront.net/kotlin/files/2017/11/clion-debugger.png" alt=""></p>
+<blockquote>
+<p>要尝试插件，请安装<code>CLion 2017.3 EAP</code>并在JetBrains插件列表中搜索“Kotlin / Native”。</p>
+<p>在接下来的日子里，我们将发布一个单独的博文，其中包含了关于插件及其功能的更多细节。当然，CLion插件只是Kotlin IDE支持的一小步，敬请关注明年的进一步公告！</p>
+</blockquote>
+<h3 id="Ktor-0-9"><a href="#Ktor-0-9" class="headerlink" title="Ktor 0.9"></a>Ktor 0.9</h3><blockquote>
+<p><strong>服务器端开发</strong>也是我们的多平台项目的关键部分。现在我们宣布自己承担这一部分：<a href="http://ktor.io/" target="_blank" rel="external">Ktor</a>的0.9版本，这是一个非常棒的基于异步协程的<strong>Web框架</strong>，它基于Kotlin建立起来。</p>
+<p>Ktor已经在JetBrains和社区内的许多项目中使用，现在我们相信它是构建非常高性能Web应用程序的坚实基础。查看ktor.io 的<a href="http://ktor.io/quickstart/index.html" target="_blank" rel="external">快速入门指南</a>，尝试一下，让我们知道你的想法，所以我们可以使它更好的1.0版本。</p>
+</blockquote>
+<h3 id="使用React和Kotlin创建现代Web应用程序"><a href="#使用React和Kotlin创建现代Web应用程序" class="headerlink" title="使用React和Kotlin创建现代Web应用程序"></a>使用React和Kotlin创建现代Web应用程序</h3><blockquote>
+<p>对于Web前端开发与科特林，今天最大的新闻是发布<a href="https://github.com/JetBrains/kotlin-wrappers" target="_blank" rel="external">官方kotlin-wrappers</a> React.js，以及 <a href="https://www.npmjs.com/package/create-react-kotlin-app" target="_blank" rel="external">create-react-kotlin-app</a>，用于创建使用React.js kotlin现代Web应用程序工具箱。使用create-react-kotlin-app，您可以生成并立即开始在客户端应用程序中工作，而不用担心项目设置和构建配置，使用静态类型语言的优点和JavaScript生态系统的强大功能。</p>
+<p>要开始使用，请运行<code>npm install -g create-react-kotlin-app</code>并<a href="https://github.com/JetBrains/create-react-kotlin-app/" target="_blank" rel="external">查看入门指南</a>。</p>
+</blockquote>
+<h3 id="多平台项目演示"><a href="#多平台项目演示" class="headerlink" title="多平台项目演示"></a>多平台项目演示</h3><blockquote>
+<p>为了展示我们的多平台项目中的所有内容如何组合在一起，我们已经构建了一个使用我们技术栈的最新技术的应用程序：<a href="https://github.com/jetbrains/kotlinconf-app" target="_blank" rel="external">KotlinConf应用</a>。它由以下组件组成：</p>
+<p>后端使用<a href="http://ktor.io/" target="_blank" rel="external">Ktor</a> ;<br><a href="https://api.kotlinconf.com/" target="_blank" rel="external">web端应用</a>使用React.js和Kotlin React包装器;<br><a href="https://play.google.com/store/apps/details?id=com.jetbrains.kotlinconf&amp;hl=en" target="_blank" rel="external">Android应用</a>使用<a href="https://github.com/kotlin/anko" target="_blank" rel="external">Anko</a>和Android架构组件;<br><a href="https://itunes.apple.com/us/app/kotlinconf/id1299196584?mt=8" target="_blank" rel="external">iOS应用</a>（上面提到）使用UIKit。</p>
+<p>后端，web端应用程序和Android应用程序共享代码使用Kotlin多平台项目技术。对于异步编程，所有组件都使用协程。为了在服务器和客户端之间交换数据，我们使用全新的<a href="https://github.com/kotlin/kotlinx.serialization" target="_blank" rel="external">kotlinx.serialization库</a>。</p>
+<p>你会发现这些源代码是很宝贵的技术，你也可以在自己的工作中使用。</p>
+</blockquote>
+<h3 id="学习kotlin"><a href="#学习kotlin" class="headerlink" title="学习kotlin"></a>学习kotlin</h3><blockquote>
+<p>随着Kotlin发展，越来越多的人对学习语言感兴趣。为了使这更容易，我们发布了一个新版本的<a href="https://www.jetbrains.com/education/kotlin-edu/" target="_blank" rel="external">EduTools插件</a>，允许通过解决您最喜爱的IDE中的交互式练习来学习Kotlin。新版本增加了对Android Studio的支持（以前仅支持IntelliJ IDEA），并包含用于构建自己的课程的新UI。</p>
+</blockquote>
+<h3 id="未来方向"><a href="#未来方向" class="headerlink" title="未来方向"></a>未来方向</h3><blockquote>
+<p>至于语言的未来发展，我们此时的主要目标是在Kotlin支持的平台之间实现更好和更广泛的代码重用。我们计划使用相同的API扩展所有平台上可用的库，以包括I / O，网络，序列化，日期处理等。</p>
+<p>在编译器中，我们的主要重点是1.3将保持内部变化，而不是外部可见的语言特性。内部更改将实现更好的性能，改进的类型推断，为所有目标平台生成更有效的代码，以及更好地响应IDE插件。我们希望我们仍然可以通过一些不错的新语言功能来改善发行版本，但是我们目前还没有作出任何承诺。</p>
+<p>让我们kotlin！</p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://xlj44400.github.io/2017/11/16/kolin编程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xlj44400">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://pic.manqian.cn/2d363401-d913-4d3d-b8fb-1c21f9dacf93?t=1500191019176">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xlj44400'Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/11/16/kolin编程/" itemprop="url">kotlin编程：函数类型、函数字面值、Lambda表达式、匿名函数</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-16T13:55:29+08:00">
+                2017-11-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/kotlin/" itemprop="url" rel="index">
+                    <span itemprop="name">kotlin</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/11/16/kolin编程/" class="leancloud_visitors" data-flag-title="kotlin编程：函数类型、函数字面值、Lambda表达式、匿名函数">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>kotlin里面，函数是一等公民。这意味着函数可以当作变量，作为参数传递或从另一个函数返回。当Kotlin是静态类型时，为了使它成为可能，函数需要有一个类型。它被称为函数类型（<strong>function type</strong>）。看下面例子：</p>
+<ul>
+<li><p><code>()-&gt;Unit</code> - 不返回任何东西（<code>Unit</code>）的函数类型，不带任何参数。</p>
+</li>
+<li><p><code>(Int)-&gt;Int</code> - 返回<code>Int</code>并带有单个参数类型的函数类型<code>Int</code>。</p>
+</li>
+<li><p><code>()-&gt;()-&gt;Unit</code> - 返回另一个函数的函数类型，它不返回任何东西（Unit）。这两个函数都没有参数。</p>
+</li>
+</ul>
+<p>函数类型只是一个接口的语法糖，但接口不能直接使用。不过，我们可以使用类似接口的函数类型，包括使用它们作为类型参数或实现它们：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">class MyFunction: ()-&gt;Unit &#123;</div><div class="line"></div><div class="line">    override fun invoke() &#123;</div><div class="line">        println(&quot;I am called&quot;)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">fun main(args: Array&lt;String&gt;) &#123;</div><div class="line">    val function = MyFunction()</div><div class="line">    function() // Prints: I am called</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>我们也可以使用它们来输入局部变量，属性或参数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">val greet: ()-&gt;Unit</div><div class="line">val square: (Int)-&gt;Int</div><div class="line">val producePrinter: ()-&gt;()-&gt;Unit</div></pre></td></tr></table></figure>
+<p>以上变量都不包含任何值。让我们指定一些。提供函数的最简单方法是使用引用实际函数的函数引用。这是如何使用的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">greetFunction（）&#123; </div><div class="line">    println（“Hello”）</div><div class="line">&#125;</div><div class="line">val greet = :: greetFunction</div></pre></td></tr></table></figure>
+<p>函数引用是反射的一个例子。它返回一个实现了类型接口的实例。这就是为什么可以这样使用。</p>
+<p>提供函数的另一种方法是使用函数字面值。一般来说，编程中的字面值是一种用于表示语言认为特别重要的某些类型的值的语法糖。因此，函数literal是一个特殊的符号，用于简化函数的定义。Kotlin 有两种类型的函数字面值：</p>
+<ul>
+<li><strong>Lambda表达</strong></li>
+<li><strong>匿名函数</strong></li>
+</ul>
+<p>Lambda表达式是定义函数的简便方法。我们用它来填充上面的变量：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">val greet: ()-&gt;Unit = &#123; println(&quot;Hello&quot;) &#125;</div><div class="line">val square: (Int)-&gt;Int = &#123; x -&gt; x * x &#125;</div><div class="line">val producePrinter: ()-&gt;()-&gt;Unit = &#123; &#123; println(&quot;I am printing&quot;) &#125; &#125;</div><div class="line">// Usage</div><div class="line">greet() // Prints: Hello</div><div class="line">println(square(2)) // Prints: 4</div><div class="line">producePrinter()() // Prints: I am printing</div></pre></td></tr></table></figure>
+<p>注意<code>square</code>参数类型是从属性类型推断出来的。我们可以改为显式地定义它，然后可以从lambda表达式中推断出属性类型。同样<code>greet</code>和<code>producePrinter</code>可以以推断属性类型：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">val greet = &#123; println(&quot;Hello&quot;) &#125;</div><div class="line">val square = &#123; x: Int -&gt; x * x &#125;</div><div class="line">val producePrinter = &#123; &#123; println(&quot;I am printing&quot;) &#125; &#125;</div></pre></td></tr></table></figure>
+<p>匿名函数是定义函数的另一种方法。我们用它来填充变量：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">val greet: ()-&gt;Unit = fun() &#123; println(&quot;Hello&quot;) &#125;</div><div class="line">val square: (Int)-&gt;Int = fun(x) = x * x</div><div class="line">val producePrinter: ()-&gt;()-&gt;Unit = fun(x) = fun() &#123; println(&quot;I am printing&quot;) &#125;</div></pre></td></tr></table></figure>
+<p>属性类型可以被类似地推断：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">val greet = fun() &#123; println(&quot;Hello&quot;) &#125;</div><div class="line">val square = fun(x: Int) = x * x</div><div class="line">val producePrinter = fun() = fun() &#123; println(&quot;I am printing&quot;) &#125;</div></pre></td></tr></table></figure>
+<p>正如我们所看到的，lambda表达式和匿名函数是非常相似的。怎么区分？一般来说，最大的区别是匿名函数类型更显式。当我们使用它们时更加清楚，并且需要明确指定返回值。Lambda表达式返回其正文或最后一条语句的值Unit。返回在那里不起作用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">val getMessage = &#123; response: Response -&gt;</div><div class="line">    if(response.code !in 200..299) &#123;</div><div class="line">        return &quot;Error&quot; // Error! Not allowed</div><div class="line">    &#125;</div><div class="line">    response.message</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>我们必须使用带标签的返回来比上一个语句更早地完成lambda表达式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">val getMessage = lambda@ &#123; response: Response -&gt;</div><div class="line">    if(response.code !in 200..299) &#123;</div><div class="line">        return@lambda &quot;Error&quot;</div><div class="line">    &#125;</div><div class="line">    response.message</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>匿名函数像普通函数一样工作，返回类型和返回语句都需要明确：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">val getMessage = fun(response: Response): String &#123;</div><div class="line">    if(response.code !in 200..299) &#123;</div><div class="line">        return &quot;Error&quot; // Error! Not allowed</div><div class="line">    &#125;</div><div class="line">    return response.message</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>事实是，这个符号可以互换使用，但是当我们需要使用多次返回时，最好使用匿名函数。具有单一表达式的小函数应该首选Lambda表达式。虽然有些情况下，最好是使用匿名函数。我们都知道共同的困惑者：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">fun greet() = &#123; println(&quot;Hello&quot;) &#125;</div><div class="line">greet() // What does it print?</div></pre></td></tr></table></figure>
+<p>案是是没有，因为greet返回一个函数，而不是打印任何东西。<code>greet()()</code>才打印 Hello现在注意，如果用户使用匿名函数而不是lambda表达式，答案会非常明显：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">fun greet() = fun() &#123; println(&quot;Hello&quot;) &#125;</div></pre></td></tr></table></figure>
+<p>通常情况下，匿名函数更好，因为它更明确。同样，我们应该使用匿名函数来突出显示最后一条语句是返回类型。当我们更喜欢匿名函数给予我们的明确方式时，就是这种情况。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="https://xlj44400.github.io/2017/08/02/monitor/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -742,7 +1833,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -753,7 +1844,7 @@
             
             <div class="site-state-item site-state-categories">
               
-                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-count">6</span>
                 <span class="site-state-item-name">分类</span>
               
             </div>
@@ -799,7 +1890,7 @@
 <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

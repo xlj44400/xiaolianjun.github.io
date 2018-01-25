@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="Guice介绍 Guice是谷歌推出的一个轻量级依赖注入框架，帮助我们解决Java项目中的依赖注入问题。如果使用过Spring的话，会了解到依赖注入是个非常方便的功能。不过假如只想在项目中使用依赖注入，那么引入Spring未免大材小用了。这时候我们可以考虑使用Guice。本文参考了Guice官方文档，详细信息可以直接查看Guice文档。更多阅读  Vert.x Vert.x是用于开发高度可扩展的非">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java Vert.x 集成Guice">
+<meta property="og:url" content="https://xlj44400.github.io/2018/01/16/Java Vert.x 集成Guice/index.html">
+<meta property="og:site_name" content="xlj44400&#39;Blog">
+<meta property="og:description" content="Guice介绍 Guice是谷歌推出的一个轻量级依赖注入框架，帮助我们解决Java项目中的依赖注入问题。如果使用过Spring的话，会了解到依赖注入是个非常方便的功能。不过假如只想在项目中使用依赖注入，那么引入Spring未免大材小用了。这时候我们可以考虑使用Guice。本文参考了Guice官方文档，详细信息可以直接查看Guice文档。更多阅读  Vert.x Vert.x是用于开发高度可扩展的非">
+<meta property="og:updated_time" content="2018-01-25T02:24:28.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java Vert.x 集成Guice">
+<meta name="twitter:description" content="Guice介绍 Guice是谷歌推出的一个轻量级依赖注入框架，帮助我们解决Java项目中的依赖注入问题。如果使用过Spring的话，会了解到依赖注入是个非常方便的功能。不过假如只想在项目中使用依赖注入，那么引入Spring未免大材小用了。这时候我们可以考虑使用Guice。本文参考了Guice官方文档，详细信息可以直接查看Guice文档。更多阅读  Vert.x Vert.x是用于开发高度可扩展的非">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://xlj44400.github.io/2018/01/16/Java Vert.x 集成Guice/"/>
+
+
+
+
+
+  <title>Java Vert.x 集成Guice | xlj44400'Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">xlj44400'Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">何以升华,唯有沉淀</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://xlj44400.github.io/2018/01/16/Java Vert.x 集成Guice/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xlj44400">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://pic.manqian.cn/2d363401-d913-4d3d-b8fb-1c21f9dacf93?t=1500191019176">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xlj44400'Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Java Vert.x 集成Guice</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-16T13:55:29+08:00">
+                2018-01-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Vert-x-Guice/" itemprop="url" rel="index">
+                    <span itemprop="name">Vert.x Guice</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/01/16/Java Vert.x 集成Guice/" class="leancloud_visitors" data-flag-title="Java Vert.x 集成Guice">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="Guice介绍"><a href="#Guice介绍" class="headerlink" title="Guice介绍"></a>Guice介绍</h3><blockquote>
+<p><a href="https://github.com/google/guice" target="_blank" rel="external">Guice</a>是谷歌推出的一个轻量级依赖注入框架，帮助我们解决Java项目中的依赖注入问题。如果使用过Spring的话，会了解到依赖注入是个非常方便的功能。不过假如只想在项目中使用依赖注入，那么引入Spring未免大材小用了。这时候我们可以考虑使用Guice。本文参考了Guice官方文档，详细信息可以直接查看<a href="https://github.com/google/guice/wiki/InstanceBindings" target="_blank" rel="external">Guice文档</a>。<br><a href="http://www.jianshu.com/p/a648322dc680" target="_blank" rel="external">更多阅读</a></p>
+</blockquote>
+<h3 id="Vert-x"><a href="#Vert-x" class="headerlink" title="Vert.x"></a>Vert.x</h3><blockquote>
+<p>Vert.x是用于开发高度可扩展的非阻塞应用程序的reactive工具集。本文主要介绍vertx与guice的集成，<a href="https://github.com/ltamrazov/vertx-starter-guide/tree/part-3" target="_blank" rel="external">github</a></p>
+</blockquote>
+<h3 id="Vert-x-Guice"><a href="#Vert-x-Guice" class="headerlink" title="Vert.x Guice"></a>Vert.x Guice</h3><blockquote>
+<p> Vert.x还没有内置的依赖注入。由于您无法希望在没有它的情况下开发可维护和可测试的应用程序，所以我们需要一个解决方案，因为我们使用Java，所以该解决方案是Guice。Guice是由Google开发的<a href="https://github.com/google/guice" target="_blank" rel="external">大型依赖注入库</a>。Guice的Vert.x插件已经由ef-labs构建，<a href="https://github.com/ef-labs/vertx-guice" target="_blank" rel="external">在这里找到</a>。对于Guice整合的令人敬畏的工作的所有信用都归功于他们。这篇文章将简单地演示如何将它合并到您的应用程序中。将此依赖项添加到您的项目中：</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">build.gradle:</div><div class="line">compile &apos;com.englishtown.vertx:vertx-guice:2.3.1&apos;</div></pre></td></tr></table></figure>
+<h3 id="Service-Binder"><a href="#Service-Binder" class="headerlink" title="Service Binder"></a>Service Binder</h3><blockquote>
+<p>我们需要做的第一件事是创建一个可以配置Guice来提供我们所有类的绑定器。为此，我们需要创建一个扩展的类AbstractModule。绑定器的工作是告诉Guice如何构建我们需要的所有类，并绑定我们想要用于我们在构造函数中指定的特定接口的实现。看起来像这样：</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">ServiceBinder.java：</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ServiceBinder</span> <span class="keyword">extends</span> <span class="title">AbstractModule</span> </span>&#123; </div><div class="line"></div><div class="line">    <span class="meta">@Provides</span> <span class="meta">@Singleton</span></div><div class="line">     <span class="keyword">public</span> HelloController provideController（Vertx vertx，</div><div class="line">        HelloWorld service）</div><div class="line">    &#123; </div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> HelloController（vertx，service）; </div><div class="line">    &#125; </div><div class="line"></div><div class="line">    <span class="meta">@Provides</span> <span class="meta">@Singleton</span></div><div class="line">     <span class="keyword">public</span> HelloWorld provideService（）&#123; </div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> HelloWorld（）; </div><div class="line">    &#125; </div><div class="line"></div><div class="line">    <span class="meta">@Provides</span> <span class="meta">@Singleton</span></div><div class="line">     <span class="keyword">public</span> AppConfig provideAppConfig（）&#123; </div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> AppConfig（<span class="number">30</span>，<span class="number">30</span>）; </div><div class="line">    &#125; </div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">     <span class="keyword">protected</span> <span class="keyword">void</span> configure（）&#123; </div><div class="line"></div><div class="line">    &#125; </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>该@Provides注解标记的方法作为提供者，@Singleton 表示注入的实例为单例，<br>我们要做的第二件事是覆盖该configure方法。当模块被实例化时，该方法被调用，并且它可以包括任何其他配置。我们实际上可以把我们做的方法的所有配置放在configure方法中，但是我发现它更可读和更方便地实现这些方法，所以我们configure是空的。</p>
+</blockquote>
+<h3 id="Main-Class"><a href="#Main-Class" class="headerlink" title="Main Class"></a>Main Class</h3><blockquote>
+<p>在我们使用<code>ServiceLauncher</code>类来部署我们的verticle之前。这依赖于我们构建Vert.x Launcher类的构建，并将其指向我们<code>ServiceLauncher</code>。这很好，但是如果我们要手动部署我们的verticle，我们需要一个主类。此类将创建一个Vert.x实例，并使用帮助方法使用Guice部署我们的verticle。这是我们的Main：</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line">Main.java:</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</div><div class="line">        Vertx vertx = Vertx.vertx();</div><div class="line">        deploy(vertx, ServiceLauncher.class,</div><div class="line">                                  <span class="keyword">new</span> DeploymentOptions());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> Future&lt;Void&gt; <span class="title">deploy</span><span class="params">(Vertx vertx, Class verticle,</span></span></div><div class="line">        DeploymentOptions opts)</div><div class="line">    &#123;</div><div class="line">        Future&lt;Void&gt; done = Future.future();</div><div class="line">        String deploymentName = <span class="string">"java-guice:"</span> + verticle.getName();</div><div class="line">        JsonObject config = <span class="keyword">new</span> JsonObject()</div><div class="line">                .put(<span class="string">"guice_binder"</span>, ServiceBinder.class.getName());</div><div class="line"></div><div class="line">        opts.setConfig(config);</div><div class="line"></div><div class="line">        vertx.deployVerticle(deploymentName, opts, r -&gt; &#123;</div><div class="line">              <span class="comment">// handle success/failure</span></div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        <span class="keyword">return</span> done;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ServiceLauncher</span> <span class="keyword">extends</span> <span class="title">AbstractVerticle</span></span>&#123;</div><div class="line">        <span class="keyword">private</span> AppConfig appConfig;</div><div class="line">        <span class="meta">@Inject</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="title">ServiceLauncher</span><span class="params">(AppConfig appConfig)</span> </span>&#123;</div><div class="line">            <span class="keyword">this</span>.appConfig = appConfig;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">/**</span></div><div class="line">         * Start method uses CompositeFuture to deploy all required </div><div class="line">         * verticles</div><div class="line">         *</div><div class="line">         * <span class="doctag">@param</span> done</div><div class="line">         */</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">(Future&lt;Void&gt; done)</span> </span>&#123;</div><div class="line">            <span class="comment">// start your verticle here</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ol>
+<li>方法简单地创建一个Vert.x实例，并使用一个辅助方法来部署我们的静态verticle启动器类。<code>Vertx.vertx()</code>也可以选择指定不同的参数，例如实例数。</li>
+<li>接下来是我们的帮助方法，这是集成Guice库的重要部分。我们在这里做的第一件事是通过预先等待修改verticle的名称java-guice。Vert.x允许我们在部署之前创建和注册负责实例化verticle工厂。这个库提供了一个将Guice和名字开头为java-guice的Verticle集成起来的工厂方法。其次，我们在部署选项中指定我们的<code>ServiceBinder</code>，从而让Guice知道在哪里找到它。</li>
+<li>最后是我们的<code>ServiceLauncher</code> 。它与它是一样的，除了构造函数。我们用@InjectGuice注解添加了构造函数。这使得verticle工厂可以实例化此verticle，并让Guice知道注入我们需要的依赖关系。在这种情况下，它只是一个虚拟AppConfig依赖。重要的是要注意，<code>ServiceLauncher</code>还需要使用我们的帮助方法来部署我们的verticle。这是因为您需要指定ServiceBinder并修改您要使用Guice的每个verticle的名称。</li>
+</ol>
+<blockquote>
+<p>现在我们的verticles在任何地方都可以使用Guice依赖注入。我们修改了所有代码以反映这一点，将依赖关系注入到verticles，控制器和我们的服务类中。例如，HelloController构造函数如下所示：</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">@Inject</div><div class="line"> public HelloController（Vertx vertx，HelloWorld service）&#123; </div><div class="line">    this.vertx = vertx; </div><div class="line">    this.service = service; </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>注意</strong>：我们不需要在其中创建Vertx提供者，ServiceBinder因为Vert.x Guice库已经具有Vert.x提供者，它提供了用于部署Verticle的Vert.x实例。</p>
+</blockquote>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><blockquote>
+<p>本系列探讨了使用Vert.x的应用程序架构。我们讨论了高吞吐量单verticle结构，独立可扩展性的多verticle结构，以及依赖注入的Guice集成。</p>
+</blockquote>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/09/如何用kotlin写DSLs/" rel="next" title="如何用kotlin写DSLs（入门篇）">
+                <i class="fa fa-chevron-left"></i> 如何用kotlin写DSLs（入门篇）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://pic.manqian.cn/2d363401-d913-4d3d-b8fb-1c21f9dacf93?t=1500191019176"
+               alt="xlj44400" />
+          <p class="site-author-name" itemprop="name">xlj44400</p>
+           
+              <p class="site-description motion-element" itemprop="description">技术和生活,我融为一体</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Guice介绍"><span class="nav-number">1.</span> <span class="nav-text">Guice介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Vert-x"><span class="nav-number">2.</span> <span class="nav-text">Vert.x</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Vert-x-Guice"><span class="nav-number">3.</span> <span class="nav-text">Vert.x Guice</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Service-Binder"><span class="nav-number">4.</span> <span class="nav-text">Service Binder</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Main-Class"><span class="nav-number">5.</span> <span class="nav-text">Main Class</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+<div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xlj44400</span>
+  <span id="busuanzi_container_site_pv">
+      total visited<span id="busuanzi_value_site_pv"></span>times
+  </span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+  <!-- custom analytics part create by xiamo -->
+<script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+<script>AV.initialize("tOtFY4fbWJzw1s5bwvtzv6Qj-gzGzoHsz", "p1MQHhpzUqgXy6x2xQezFv4h");</script>
+<script>
+function showTime(Counter) {
+	var query = new AV.Query(Counter);
+	$(".leancloud_visitors").each(function() {
+		var url = $(this).attr("id").trim();
+		query.equalTo("url", url);
+		query.find({
+			success: function(results) {
+				if (results.length == 0) {
+					var content = ' ' + $(document.getElementById(url)).text()+' 0';
+					$(document.getElementById(url)).text(content);
+					return;
+				}
+				for (var i = 0; i < results.length; i++) {
+				  if(i>0) continue;
+					var object = results[i];
+					var str = $(document.getElementById(url)).text();
+					var content =  ' ' + str.replace(/(\d*)/,'')+' '+object.get('time');
+					$(document.getElementById(url)).text(content);
+				}
+			},
+			error: function(object, error) {
+				console.log("Error: " + error.code + " " + error.message);
+			}
+		});
+
+	});
+}
+
+function addCount(Counter) {
+	var Counter = AV.Object.extend("Counter");
+	url = $(".leancloud_visitors").attr('id').trim();
+	title = $(".leancloud_visitors").attr('data-flag-title').trim();
+	var query = new AV.Query(Counter);
+	query.equalTo("url", url);
+	query.find({
+		success: function(results) {
+			if (results.length > 0) {
+				var counter = results[0];
+				counter.fetchWhenSave(true);
+				counter.increment("time");
+				counter.save(null, {
+					success: function(counter) {
+						var content = ' ' + $(document.getElementById(url)).text()+' '+counter.get('time');
+						$(document.getElementById(url)).text(content);
+					},
+					error: function(counter, error) {
+						console.log('Failed to save Visitor num, with error message: ' + error.message);
+					}
+				});
+			} else {
+				var newcounter = new Counter();
+				newcounter.set("title", title);
+				newcounter.set("url", url);
+				newcounter.set("time", 1);
+				newcounter.save(null, {
+					success: function(newcounter) {
+						var content = ' ' + $(document.getElementById(url)).text()+' '+newcounter.get('time');
+						$(document.getElementById(url)).text(content);
+					},
+					error: function(newcounter, error) {
+						console.log('Failed to create');
+					}
+				});
+			}
+		},
+		error: function(error) {
+			console.log('Error:' + error.code + " " + error.message);
+		}
+	});
+}
+$(function() {
+	var Counter = AV.Object.extend("Counter");
+	if ($('.leancloud_visitors').length == 1) {
+		addCount(Counter);
+	} else if ($('.post-title-link').length > 1) {
+		showTime(Counter);
+	}
+});
+</script>
+
+  
+</body>
+</html>
