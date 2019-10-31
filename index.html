@@ -256,6 +256,229 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://xlj44400.github.io/2019/10/31/不完全依赖异常的Kotlin错误处理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xlj44400">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://pic.manqian.cn/2d363401-d913-4d3d-b8fb-1c21f9dacf93?t=1500191019176">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xlj44400'Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/10/31/不完全依赖异常的Kotlin错误处理/" itemprop="url">不完全依赖异常的Kotlin错误处理</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-31T13:55:29+08:00">
+                2019-10-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/kotlin/" itemprop="url" rel="index">
+                    <span itemprop="name">kotlin</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/kotlin/arrow-kt/" itemprop="url" rel="index">
+                    <span itemprop="name">arrow-kt</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/10/31/不完全依赖异常的Kotlin错误处理/" class="leancloud_visitors" data-flag-title="不完全依赖异常的Kotlin错误处理">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##引言</p>
+<p>在Java中，如果进程可能导致错误，则可以使用检查的异常强制调用方处理错误。<br>另一方面，Kotlin没有检查异常机制，因此由于检查异常而导致的错误处理无法实施。</p>
+<p>因此，将使用受检查的异常的Java代码移植到Kotlin时，错误处理由编码规则处理，而不是依赖编译器。<br>我实际上使用异常对Kotlin进行了代码审查，但我意识到代码审查负担增加了。</p>
+<p>例如，如果有一个根据以下特定输入引发异常的函数，则只能通过检查或测试来确认该函数调用正确地try-catch</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ParseException</span></span>(message: String?) : Exception(message)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">toInt</span><span class="params">(input:<span class="type">String</span>)</span></span>:<span class="built_in">Int</span> &#123;</div><div class="line">    <span class="keyword">if</span>(input.matches(<span class="string">"^[+-]?[0-9]+$"</span>.toRegex())) &#123;</div><div class="line">        <span class="keyword">return</span> Integer.parseInt(input)</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">throw</span> ParseException(<span class="string">"<span class="variable">$input</span> is not Integer string"</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">somethingCode</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="comment">// try catch 有时会忘记</span></div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        println(toInt(<span class="string">"ABC"</span>))</div><div class="line">    &#125; <span class="keyword">catch</span> (e:ParseException) &#123;</div><div class="line">        e.printStackTrace()</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>实际上，有时我在处理没有检查异常的语言中的错误处理时会遇到麻烦。<br>C＃是另一种没有检查异常的语言。<br>API调用结果中的错误作为C＃库中的异常返回，但是这很麻烦，因为仅文档描述了返回的异常类型。</p>
+<p>不过，我认为由于使用try-catch的困难，现代语言未采用检查异常。<br>另外，我认为在最近的趋势中异步处理与异常之间的兼容性很差。<br>我编写了try-catch来尝试捕获异步处理中发生的错误，但是我认为每个人都有他们无法做到的经验。</p>
+<p>某些现代编程语言也不例外，某些返回值包括失败。<br>在Scala中，它返回<code>Either</code>，Rust返回<code>Result</code>，而Golang返回正常值和失败值。<br>通过这种方法，可以用返回值来强制判断是否存在错误，并且可以处理异步处理的失败。</p>
+<p>在Kotlin中依靠异常进行错误处理是很危险的，如果可能的话，我希望使用Scala的<code>Either</code>等效机制，而且我发现Kotlin除了异常以外还具有其他错误处理方式。</p>
+<p><strong>这是除异常以外的三种方法。</strong></p>
+<p>##使用Result</p>
+<p>从Kotlin 1.3开始，添加了<code>kotlin.Result</code>类型。<br>可以在以下位置找到有关引入结果类型的建议：</p>
+<p><a href="https://github.com/Kotlin/KEEP/blob/master/proposals/stdlib/result.md" target="_blank" rel="external">https://github.com/Kotlin/KEEP/blob/master/proposals/stdlib/result.md</a></p>
+<p>查看提案的结果是，它是具有成功值或失败值的类型，例如<code>Either</code>，并且可以通过组合器（例如map）进行转换。<br>但是，与普通类型不同，构造函数无法生成<code>Result</code>值，并且<code>Result</code>类型不能用作函数返回值。<br>似乎可以将其定义为变量，参数和结果值的集合。</p>
+<p>因此，似乎假定如下代替try-catch的用法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">fun stringToInt(input:String) &#123;</div><div class="line"></div><div class="line">    如果在RunCatching块发生异常//失败值，否则块的返回值是成功的值</div><div class="line">    val result:Result&lt;Int&gt; = runCatching &#123;</div><div class="line">        Integer.parseInt(input)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    //不能是返回值。</div><div class="line">    // return result</div><div class="line"></div><div class="line">    // 成功或失败的判断</div><div class="line">    println(result.isSuccess)</div><div class="line">    println(result.isFailure)</div><div class="line"></div><div class="line">    // 所获取的值</div><div class="line">    println(result.getOrNull()) // 成功返回结果</div><div class="line">    println(result.exceptionOrNull()) // 失败或异常返回结果</div><div class="line"></div><div class="line">    // 结果转换</div><div class="line">    result.map&#123;it * 2&#125; </div><div class="line">    result.recover &#123; 0 &#125; </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>与try-catch相比，可以适当转换<code>Result</code>值，因此更易于处理。<br>欢迎引入<code>Result</code>类型，因为我认为采用Kotlin时没有检查异常是一个问题，但是错误处理没有其他选择。<br>但是，不幸的是，用法受到限制，因为<code>Result</code>不能是返回值。</p>
+<p>##使用Sealed Class处理错误</p>
+<p>上面提到的关于<code>Result</code>类型的建议很有趣，因为其中有一个<code>error-handling-style-and-exceptions</code>部分。</p>
+<p><a href="https://github.com/Kotlin/KEEP/blob/master/proposals/stdlib/result.md#error-handling-style-and-exceptions" target="_blank" rel="external">https://github.com/Kotlin/KEEP/blob/master/proposals/stdlib/result.md#error-handling-style-and-exceptions</a></p>
+<p>以下是内容摘要。</p>
+<ul>
+<li>Kotlin异常旨在用于不可恢复的异常（内存不足，错误，所谓的未经检查的异常）<ul>
+<li>我想避免在代码中到处写try-catch的风格</li>
+</ul>
+</li>
+<li>最好通过屏蔽类推导类型来表达域逻辑中的错误</li>
+<li>对于偶尔发生的异常（例如网络IO错误），最好处理全局异常处理程序，而不是单独处理它们。<ul>
+<li>例如，在调用的最外侧使用上面的结果<code>RunCatching</code></li>
+<li>这样做可以使域逻辑签名保持简单<br>重点不是使任何错误成为例外，而是根据层来更改方法。</li>
+</ul>
+</li>
+</ul>
+<p>以下是使用<code>sealed class</code>的示例。<br>对于搜索用户的域逻辑，将找到或未找到用户的规范表示为两种屏蔽类型的派生类型，如下所示。<br>从屏蔽类派生的表达式经常在Scala中使用。在Scala中，它称为ADT（Algebraic data type）。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">data class User(val id:String, val name:String, val age:Int)</div><div class="line"></div><div class="line">sealed class FindUserResult &#123;</div><div class="line">    </div><div class="line">    data class Found(val user: User) : FindUserResult()</div><div class="line">    </div><div class="line">    object NotFound : FindUserResult()</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>Domian Model</code>的实现是这样的吗？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">fun findUserByName(name: String, dao:UserDao): FindUserResult &#123;</div><div class="line">    </div><div class="line">    val user = dao.selectUserByName(name)</div><div class="line"></div><div class="line">    if(user == null) &#123;</div><div class="line">        return FindUserResult.NotFound</div><div class="line">    &#125; else &#123;</div><div class="line">        return FindUserResult.Found(user)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>Domian Model</code>使用实现成功/失败流程，如下所示。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">fun callDomainLogic(name:String) &#123;</div><div class="line"></div><div class="line">    val result = findUserByName(name, UserDao())</div><div class="line"></div><div class="line">    when(result) &#123;</div><div class="line">        is FindUserResult.NotFound -&gt; println(&quot;$name is not found&quot;)</div><div class="line">        is FindUserResult.Found -&gt; println(&quot;Hello $&#123;result.user.name&#125; !&quot;)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如果UserDao给出IO异常等，它将包装在Result的顶部。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">fun main(args:Array&lt;String&gt;) &#123;</div><div class="line">    runCatching &#123; </div><div class="line">        callDomainLogic(args[0])</div><div class="line">    &#125;.onSuccess &#123; println(&quot;Success End&quot;) &#125;</div><div class="line">     .onFailure &#123; println(&quot;Error of &quot; + it) &#125;</div><div class="line">   </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>尽管此方法使每一层的类型转换复杂化，但似乎可以牢固地进行<code>Domian Model</code>处理。</p>
+<p>我喜欢这种结合函数式编程的方法。但是，当出于更好的Java的目的引入Kotlin时，我认为有必要改变主意以纳入此方法。</p>
+<p>##在Arrow库中使用</p>
+<p>在某些情况下，使用<code>sealed class</code>处理异常的方法可能过于僵化，并且可能难以综合多领域模型的结果。<br>有时，只显示成功和失败的类型会更方便。<br>说实话，如果<code>Result</code>可以是一个返回值，那会很好，但事实并非如此。</p>
+<p>在这种情况下，您可以使用名为<a href="https://arrow-kt.io/" target="_blank" rel="external">Arrow</a>的库。<br><code>Arrow</code>在函数式编程中提供了有用的功能，例如Scala的函数式编程库Scalaz和Cats。<br>还可以利用协程确定作用域机制来支持<code>monad</code>表示法。</p>
+<p>箭头的<code>Either</code>类型表示成功或失败。它也是<code>Either</code>类型<code>monad</code>类的实例，因此您可以轻松地组成多个<code>Either</code>。</p>
+<p>要使用<code>Arrow</code>，您需要定义一个依赖项。如果是gradle，请执行以下操作。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">def arrow_version = &quot;0.8.1&quot;</div><div class="line"></div><div class="line">dependencies &#123;</div><div class="line">    //...</div><div class="line">    compile(&quot;io.arrow-kt:arrow-core:$arrow_version&quot;)</div><div class="line">    compile(&quot;io.arrow-kt:arrow-syntax:$arrow_version&quot;)</div><div class="line">    compile(&quot;io.arrow-kt:arrow-typeclasses:$arrow_version&quot;)</div><div class="line">    compile(&quot;io.arrow-kt:arrow-data:$arrow_version&quot;)</div><div class="line">    compile(&quot;io.arrow-kt:arrow-instances-core:$arrow_version&quot;)</div><div class="line">    compile(&quot;io.arrow-kt:arrow-instances-data:$arrow_version&quot;)</div><div class="line">    // kapt //使用更高种类的类型等时，必须使用</div><div class="line">    kapt( &quot;io.arrow-kt:arrow-annotations-processor:$arrow_version&quot;)</div><div class="line">    //...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>首先，如果存在与该参数对应的值，请尝试定义一个返回该值的函数，否则返回错误信息<code>Either</code>。<br>分别生成成功值右边和失败值左边。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">import arrow.core.Either</div><div class="line"></div><div class="line">class NotFoundException(message:String?) : Exception(message)</div><div class="line"></div><div class="line">fun findValue(key:String):Either&lt;NotFoundException, String&gt; &#123;</div><div class="line"></div><div class="line">    val repo = mapOf(&quot;A&quot; to &quot;B&quot;, &quot;B&quot; to &quot;C&quot;, &quot;C&quot; to &quot;D&quot;)</div><div class="line"></div><div class="line">    if(repo.containsKey(key)) &#123;</div><div class="line">        return Either.right(repo[key]!!)</div><div class="line">    &#125; else  &#123;</div><div class="line">        return Either.left(NotFoundException(&quot;$key is missing&quot;))</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>基本上可以使用<code>when</code>按如下方式处理这两个值。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">val res = findValue(&quot;A&quot;)</div><div class="line"></div><div class="line">    when(res) &#123;</div><div class="line">        is Either.Right -&gt; println(&quot;Success $&#123;res.b&#125;&quot;)</div><div class="line">        </div><div class="line">        is Either.Left -&gt; println(&quot;Fail $&#123;res.a.message&#125;&quot;)</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>看起来很简单，因此，如果成功调用<code>findValue</code>，请考虑再次使用返回值调用<code>findValue</code>。<br>您无需编写代码即可从<code>Either</code>中提取成功值并将其第二次传递给<code>findValue</code>。<br>您只需要在最后一次从<code>Either</code>中获取值即可。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">import arrow.core.Either</div><div class="line">import arrow.instances.either.monad.*</div><div class="line">//</div><div class="line">    val res = findValue(&quot;A&quot;)</div><div class="line">        .flatMap &#123; res1 -&gt; findValue(res1)</div><div class="line">            .map&#123;res2 -&gt; &quot;$res1 -&gt; $res2&quot;&#125; &#125;</div><div class="line"></div><div class="line">    when(res) &#123;</div><div class="line">        is Either.Right -&gt; println(&quot;Success $&#123;res.b&#125;&quot;) </div><div class="line">        is Either.Left -&gt; println(&quot;Fail $&#123;res.a.message&#125;&quot;)</div><div class="line">    &#125; // B -&gt; C</div></pre></td></tr></table></figure>
+<p>在上述情况下，仅当两个findValue调用都为Right时，变量res才为Right。<br>当任一调用变为Left时，该值将在那时返回。</p>
+<p>flatMap的两个联接就足够了，但是随着数量的增加，它变得越来越难看。<br>那时，可以通过monad符号刷新外观。</p>
+<p>为Either的MonadError定义一个范围，并在其中绑定以获得正确的Either值。<br>只能使用与作用域类型相同的值来调用bind（在这种情况下两者都可以），在任何其他monad实例上调用bind都会导致编译错误。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">import arrow.core.Either</div><div class="line">import arrow.typeclasses.binding</div><div class="line"></div><div class="line">import arrow.instances.either.monadError.*</div><div class="line">import arrow.instances.either.monad.*</div><div class="line"></div><div class="line">fun findValueThree(key:String) = Either.monadError&lt;NotFoundException&gt;().binding &#123;</div><div class="line">    val v1 = findValue(key).bind()</div><div class="line">    val v2 = findValue(v1).bind()</div><div class="line">    val v3 = findValue(v2).bind()</div><div class="line">    &quot;$key -&gt; $v1 -&gt; $v2 -&gt; $v3&quot;</div><div class="line">&#125;</div><div class="line"></div><div class="line">fun main(args:Array&lt;String&gt;) &#123;</div><div class="line"></div><div class="line">    val res3 = findValueThree(&quot;A&quot;)</div><div class="line">    val res4 = findValueThree(&quot;B&quot;)</div><div class="line"></div><div class="line">    println(res3) // Right(b=A -&gt; B -&gt; C -&gt; D)</div><div class="line">    println(res4) // Left(a=NotFoundException: D is missing)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上述使用绑定的方法和使用<code>flatMap</code>的方法都执行相同的处理。<br>这是因为绑定中的绑定通过使用协程机制在内部用<code>flatMap</code>替换后续处理而起作用。</p>
+<p>在Scala中使用for表达式描述了相同的过程。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">def findValueThree(key:String):Either[NotFoundException, String]</div><div class="line">   = for(v1 &lt;- findValue(key); </div><div class="line">         v2 &lt;- findValue(v1);</div><div class="line">         v3 &lt;- findValue(v2))</div><div class="line">     yield s&quot;$key -&gt; $v1 -&gt; $v2 -&gt; $v3&quot;</div></pre></td></tr></table></figure>
+<p>与for表达式不同，Arrow绑定有点麻烦，因为它需要指定monad的类型。<br>另一方面，for表达式在可以写入与bind等效的表达式的位置有限，但是Arrow的优点是可以在任何地方写入bind。</p>
+<p>当我第一次见到Arrow时，我想知道如何使用Kotlin，它比Scala的功能编程支持少。但是，我认为已经完成了，可以通过充分利用Kotlin的功能在某种程度上执行功能编程。</p>
+<p>##总结</p>
+<p>介绍Kotlin的错误处理方法：Exception，Result，Shield Class和Arrow。</p>
+<p>我以为Kotlin的错误处理能力显然很弱，所以我犹豫采用它，但是在本次研究中，我觉得如果使用<code>Result</code>或<code>Either</code>都是这样。<br>根据团队的技术水平和应用程序的大小，让我们采用除异常之外的其他错误处理方法。</p>
+<p><strong>最后分享一篇不错的Java异常处理</strong> <a href="https://lrwinx.github.io/2016/04/28/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E8%AE%BE%E8%AE%A1java%E5%BC%82%E5%B8%B8/" target="_blank" rel="external">如何优雅的设计java异常</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="https://xlj44400.github.io/2018/07/30/2018面试题/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2070,160 +2293,13 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://xlj44400.github.io/2017/07/16/dubbo/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="xlj44400">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://pic.manqian.cn/2d363401-d913-4d3d-b8fb-1c21f9dacf93?t=1500191019176">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="xlj44400'Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/07/16/dubbo/" itemprop="url">dubbo源码分析</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-16T13:55:29+08:00">
-                2017-07-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/dubbo/" itemprop="url" rel="index">
-                    <span itemprop="name">dubbo</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2017/07/16/dubbo/" class="leancloud_visitors" data-flag-title="dubbo源码分析">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数 </span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="服务治理框架：DUBBO"><a href="#服务治理框架：DUBBO" class="headerlink" title="服务治理框架：DUBBO"></a>服务治理框架：DUBBO</h1><h2 id="dubbo官网"><a href="#dubbo官网" class="headerlink" title="dubbo官网"></a><a href="http://dubbo.io/" target="_blank" rel="external">dubbo官网</a></h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">DUBBO是一个分布式服务框架，致力于提供高性能和透明化的RPC远程服务调用方案，是阿里巴巴SOA服务化治理方案的核心框架，每天为2,000+个服务提供3,000,000,000+次访问量支持，并被广泛应用于阿里巴巴集团的各成员站点。</div></pre></td></tr></table></figure>
-<h2 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h2><ul>
-<li>源码：svn checkout <a href="http://code.alibabatech.com/svn/dubbo/trunk" target="_blank" rel="external">http://code.alibabatech.com/svn/dubbo/trunk</a> dubbo
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/07/16/dubbo/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+  </nav>
+
 
 
           </div>
@@ -2267,7 +2343,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-count">11</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2278,7 +2354,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-count">12</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -2371,7 +2447,7 @@
 <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
