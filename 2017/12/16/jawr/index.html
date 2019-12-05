@@ -6,10 +6,10 @@
 
 
 <html class="theme-next pisces use-motion" lang="zh-Hans">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
@@ -19,8 +19,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -38,7 +38,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -72,21 +72,21 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="Hexo, NexT" />
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
 
 
+  <meta name="keywords" content="Hexo, NexT">
 
 
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
 
 
 
@@ -99,6 +99,7 @@
 <meta property="og:url" content="https://xlj44400.github.io/2017/12/16/jawr/index.html">
 <meta property="og:site_name" content="xlj44400&#39;Blog">
 <meta property="og:description" content="1. 主要用到的依赖： 12345678910&amp;lt;dependency&amp;gt;          &amp;lt;groupId&amp;gt;com.github.dtrunk90&amp;lt;/groupId&amp;gt;          &amp;lt;artifactId&amp;gt;thymeleaf-jawr-extension&amp;lt;/artifactId&amp;gt;          &amp;lt;version&amp;gt;2.0">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2018-01-25T02:35:31.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="基于jawr的springboot+springmvc+thymeleaf的web静态文件压缩方案">
@@ -130,7 +131,7 @@
 
 
 
-  <link rel="canonical" href="https://xlj44400.github.io/2017/12/16/jawr/"/>
+  <link rel="canonical" href="https://xlj44400.github.io/2017/12/16/jawr/">
 
 
 
@@ -170,7 +171,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">xlj44400'Blog</span>
         <span class="logo-line-after"><i></i></span>
@@ -200,7 +201,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             首页
           </a>
@@ -210,7 +211,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             归档
           </a>
@@ -220,7 +221,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             标签
           </a>
@@ -259,7 +260,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="xlj44400">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="https://pic.manqian.cn/2d363401-d913-4d3d-b8fb-1c21f9dacf93?t=1500191019176">
     </span>
 
@@ -295,7 +296,7 @@
           </span>
 
           
-            <span class="post-category" >
+            <span class="post-category">
             
               <span class="post-meta-divider">|</span>
             
@@ -364,22 +365,22 @@
 
       
         <p><strong>1. 主要用到的依赖：</strong></p>
-<pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&lt;dependency&gt;</div><div class="line">          &lt;groupId&gt;com.github.dtrunk90&lt;/groupId&gt;</div><div class="line">          &lt;artifactId&gt;thymeleaf-jawr-extension&lt;/artifactId&gt;</div><div class="line">          &lt;version&gt;2.0.2&lt;/version&gt;</div><div class="line">      &lt;/dependency&gt;</div><div class="line">      &lt;dependency&gt;</div><div class="line">          &lt;groupId&gt;net.jawr&lt;/groupId&gt;</div><div class="line">          &lt;artifactId&gt;jawr-core&lt;/artifactId&gt;</div><div class="line">          &lt;version&gt;3.9&lt;/version&gt;</div><div class="line">      &lt;/dependency&gt;</div></pre></td></tr></table></figure>
+<pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">          &lt;groupId&gt;com.github.dtrunk90&lt;/groupId&gt;</span><br><span class="line">          &lt;artifactId&gt;thymeleaf-jawr-extension&lt;/artifactId&gt;</span><br><span class="line">          &lt;version&gt;2.0.2&lt;/version&gt;</span><br><span class="line">      &lt;/dependency&gt;</span><br><span class="line">      &lt;dependency&gt;</span><br><span class="line">          &lt;groupId&gt;net.jawr&lt;/groupId&gt;</span><br><span class="line">          &lt;artifactId&gt;jawr-core&lt;/artifactId&gt;</span><br><span class="line">          &lt;version&gt;3.9&lt;/version&gt;</span><br><span class="line">      &lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
 </code></pre><p><strong>2. 与spring集成example可参考：</strong><br><code>https://github.com/j-a-w-r/jawr-spring/tree/master/jawr-spring-extension</code></p>
 <p><strong>3. jawr core源码分析：</strong></p>
 <p>主要通过<code>JawrSpringController</code>初始化<code>JawrRequestHandler</code>，这个handler是整个静态文件压缩初始化的入口</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">public JawrRequestHandler(ServletContext context, Map&lt;String, Object&gt; initParams, Properties configProps)</div><div class="line">throws ServletException &#123;</div><div class="line"></div><div class="line">	this.initParameters = initParams;</div><div class="line">	initRequestHandler(context, configProps);</div><div class="line">&#125;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Initialize the request handler</div><div class="line"> * </div><div class="line"> * @param context</div><div class="line"> *            the servlet context</div><div class="line"> * @param configProps</div><div class="line"> *            the configuration properties</div><div class="line"> * @throws ServletException</div><div class="line"> *             if an exception occurs</div><div class="line"> */</div><div class="line">private void initRequestHandler(ServletContext context, Properties configProps) throws ServletException &#123;｝</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public JawrRequestHandler(ServletContext context, Map&lt;String, Object&gt; initParams, Properties configProps)</span><br><span class="line">throws ServletException &#123;</span><br><span class="line"></span><br><span class="line">	this.initParameters = initParams;</span><br><span class="line">	initRequestHandler(context, configProps);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Initialize the request handler</span><br><span class="line"> * </span><br><span class="line"> * @param context</span><br><span class="line"> *            the servlet context</span><br><span class="line"> * @param configProps</span><br><span class="line"> *            the configuration properties</span><br><span class="line"> * @throws ServletException</span><br><span class="line"> *             if an exception occurs</span><br><span class="line"> */</span><br><span class="line">private void initRequestHandler(ServletContext context, Properties configProps) throws ServletException &#123;｝</span><br></pre></td></tr></table></figure>
 <p><strong>initRequestHandler 调用</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">rotected void initializeJawrContext(Properties props) throws ServletException</div><div class="line"></div><div class="line">// Initialize config</div><div class="line">initializeJawrConfig(props);</div><div class="line"></div><div class="line">bundlesHandler = factory.buildResourceBundlesHandler();</div><div class="line"></div><div class="line">//PropertiesBasedBundlesHandlerFactory</div><div class="line">public ResourceBundlesHandler buildResourceBundlesHandler()</div><div class="line">			throws DuplicateBundlePathException, BundleDependencyException &#123;</div><div class="line">		return factory.buildResourceBundlesHandler();</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">// BundlesHandlerFactory	</div><div class="line">public ResourceBundlesHandler buildResourceBundlesHandler()</div><div class="line">			throws DuplicateBundlePathException, BundleDependencyException&#123;</div><div class="line">			</div><div class="line">			...</div><div class="line">			</div><div class="line">			// Use the cached proxy if specified when debug mode is off.</div><div class="line">		if (useCacheManager &amp;&amp; !jawrConfig.isDebugModeOn())</div><div class="line">			collector = new CachedResourceBundlesHandler(collector);</div><div class="line">		//这里是初始化入口</div><div class="line">		collector.initAllBundles();</div><div class="line">		return collector;</div><div class="line">		</div><div class="line">			&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">rotected void initializeJawrContext(Properties props) throws ServletException</span><br><span class="line"></span><br><span class="line">// Initialize config</span><br><span class="line">initializeJawrConfig(props);</span><br><span class="line"></span><br><span class="line">bundlesHandler = factory.buildResourceBundlesHandler();</span><br><span class="line"></span><br><span class="line">//PropertiesBasedBundlesHandlerFactory</span><br><span class="line">public ResourceBundlesHandler buildResourceBundlesHandler()</span><br><span class="line">			throws DuplicateBundlePathException, BundleDependencyException &#123;</span><br><span class="line">		return factory.buildResourceBundlesHandler();</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">// BundlesHandlerFactory	</span><br><span class="line">public ResourceBundlesHandler buildResourceBundlesHandler()</span><br><span class="line">			throws DuplicateBundlePathException, BundleDependencyException&#123;</span><br><span class="line">			</span><br><span class="line">			...</span><br><span class="line">			</span><br><span class="line">			// Use the cached proxy if specified when debug mode is off.</span><br><span class="line">		if (useCacheManager &amp;&amp; !jawrConfig.isDebugModeOn())</span><br><span class="line">			collector = new CachedResourceBundlesHandler(collector);</span><br><span class="line">		//这里是初始化入口</span><br><span class="line">		collector.initAllBundles();</span><br><span class="line">		return collector;</span><br><span class="line">		</span><br><span class="line">			&#125;</span><br></pre></td></tr></table></figure>
 <p><strong>压缩后的临时文件的存放目录</strong><br><code>AbstractResourceBundleHandler</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">/** The path of the temporary working directory */</div><div class="line">protected String tempDirPath;</div><div class="line"></div><div class="line">/** The path of the directory which contain the bundles in text format */</div><div class="line">protected String textDirPath;</div><div class="line"></div><div class="line">/** The path of the directory which contain the bundles in gzip format */</div><div class="line">protected String gzipDirPath;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">/** The path of the temporary working directory */</span><br><span class="line">protected String tempDirPath;</span><br><span class="line"></span><br><span class="line">/** The path of the directory which contain the bundles in text format */</span><br><span class="line">protected String textDirPath;</span><br><span class="line"></span><br><span class="line">/** The path of the directory which contain the bundles in gzip format */</span><br><span class="line">protected String gzipDirPath;</span><br></pre></td></tr></table></figure>
 <p><strong>tempDirPath 路径：javax.servlet.context.tempdir 的目录</strong></p>
 <p><strong>4.集成spring boot</strong></p>
 <p>jawr的配置文件：放到<code>aplication.properties</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">##### Common properties #####</div><div class="line">jawr.debug.on=false</div><div class="line">＃gzip压缩</div><div class="line">jawr.gzip.on=true</div><div class="line">jawr.gzip.ie6.on=false</div><div class="line">jawr.charset.name=UTF-8</div><div class="line">#使用md5生成hashcode</div><div class="line">jawr.bundle.hashcode.generator=MD5</div><div class="line">jawr.use.generator.cache=false</div><div class="line">jawr.use.smart.bundling=true</div><div class="line">jawr.use.bundle.mapping=true</div><div class="line"></div><div class="line"></div><div class="line"># JAVASCRIPT properties and mappings</div><div class="line">#压缩文件目录 也就是上面tempDirPath路径下的 /js 子目录</div><div class="line">jawr.js.bundle.basedir=/js</div><div class="line">jawr.js.bundle.bundlepostprocessors=JSMin</div><div class="line"></div><div class="line">#id 是标签src属性用的  mappings是静态文件路径</div><div class="line">#id 格式必须是jawr.js.bundle.名字.id 的格式</div><div class="line"># 路径映射 jawr.js.bundle.名字.mappings</div><div class="line"># jar:static/js/jquery-1.9.1.min.js jar:后面是静态文件路径 也就是web项目根目录下的 static 目录</div><div class="line"># 多个路径用逗号分开 jar:static/js/addRead.js,jar:static/js/pc_detail.js</div><div class="line">jawr.js.bundle.jquery.id= bundleid</div><div class="line">jawr.js.bundle.jquery.mappings=jar:static/js/jquery-1.9.1.min.js</div><div class="line"></div><div class="line"></div><div class="line"># CSS properties and mappings</div><div class="line">jawr.css.bundle.basedir=/css</div><div class="line">jawr.css.bundle.bundlepostprocessors=cssminify,base64ImageEncoder</div><div class="line">jawr.css.bundle.filepostprocessors=base64ImageEncoder</div><div class="line"></div><div class="line">jawr.css.bundle.pcindex.id= bundleid</div><div class="line">jawr.css.bundle.pcindex.mappings=jar:static/css/index.css</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">##### Common properties #####</span><br><span class="line">jawr.debug.on=false</span><br><span class="line">＃gzip压缩</span><br><span class="line">jawr.gzip.on=true</span><br><span class="line">jawr.gzip.ie6.on=false</span><br><span class="line">jawr.charset.name=UTF-8</span><br><span class="line">#使用md5生成hashcode</span><br><span class="line">jawr.bundle.hashcode.generator=MD5</span><br><span class="line">jawr.use.generator.cache=false</span><br><span class="line">jawr.use.smart.bundling=true</span><br><span class="line">jawr.use.bundle.mapping=true</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># JAVASCRIPT properties and mappings</span><br><span class="line">#压缩文件目录 也就是上面tempDirPath路径下的 /js 子目录</span><br><span class="line">jawr.js.bundle.basedir=/js</span><br><span class="line">jawr.js.bundle.bundlepostprocessors=JSMin</span><br><span class="line"></span><br><span class="line">#id 是标签src属性用的  mappings是静态文件路径</span><br><span class="line">#id 格式必须是jawr.js.bundle.名字.id 的格式</span><br><span class="line"># 路径映射 jawr.js.bundle.名字.mappings</span><br><span class="line"># jar:static/js/jquery-1.9.1.min.js jar:后面是静态文件路径 也就是web项目根目录下的 static 目录</span><br><span class="line"># 多个路径用逗号分开 jar:static/js/addRead.js,jar:static/js/pc_detail.js</span><br><span class="line">jawr.js.bundle.jquery.id= bundleid</span><br><span class="line">jawr.js.bundle.jquery.mappings=jar:static/js/jquery-1.9.1.min.js</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># CSS properties and mappings</span><br><span class="line">jawr.css.bundle.basedir=/css</span><br><span class="line">jawr.css.bundle.bundlepostprocessors=cssminify,base64ImageEncoder</span><br><span class="line">jawr.css.bundle.filepostprocessors=base64ImageEncoder</span><br><span class="line"></span><br><span class="line">jawr.css.bundle.pcindex.id= bundleid</span><br><span class="line">jawr.css.bundle.pcindex.mappings=jar:static/css/index.css</span><br></pre></td></tr></table></figure>
 <p><strong>5.集成thymeleaf</strong></p>
 <p>依赖扩展:<code>thymeleaf-jawr-extension</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">// src 就是 上面配置的 bundleid</div><div class="line">&lt;script jawr:src=&quot;bundleid&quot;&gt;&lt;/script&gt;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// src 就是 上面配置的 bundleid</span><br><span class="line">&lt;script jawr:src=&quot;bundleid&quot;&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure>
 <p><strong>主要优势：</strong></p>
 <ol>
 <li><p>对网络交互的数据进行压缩，比如对JS，CSS，图片等。通过去除空行，空格，换行符，注释，变量名混淆可以大大减少JS和CSS文件大小。常用的压缩工具有JSMin, YuiCompressor,Packer，Microsoft Ajax Minifier和UglifyJS。对于第三方的JS，我们可以预先对其压缩。但对于自己开发的JS，为了可读性和可维护性，我们只能在项目部署的时候压缩。JAWR默认的JS压缩器为JSMIN，CSS的压缩器为CSS Compressor，可选的配置为YuiCompressor(支持JS和CSS)。</p>
@@ -490,9 +491,7 @@
 
       <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="https://pic.manqian.cn/2d363401-d913-4d3d-b8fb-1c21f9dacf93?t=1500191019176"
-               alt="xlj44400" />
+          <img class="site-author-image" itemprop="image" src="https://pic.manqian.cn/2d363401-d913-4d3d-b8fb-1c21f9dacf93?t=1500191019176" alt="xlj44400">
           <p class="site-author-name" itemprop="name">xlj44400</p>
            
               <p class="site-description motion-element" itemprop="description">技术和生活,我融为一体</p>
@@ -503,7 +502,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-count">12</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -514,7 +513,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">15</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -604,7 +603,7 @@
       <div class="footer-inner">
         <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
 </script>
-<div class="copyright" >
+<div class="copyright">
   
   &copy; 
   <span itemprop="copyrightYear">2019</span>

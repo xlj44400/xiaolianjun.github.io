@@ -6,10 +6,10 @@
 
 
 <html class="theme-next pisces use-motion" lang="zh-Hans">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
@@ -19,8 +19,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -38,7 +38,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -72,21 +72,21 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="Hexo, NexT" />
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
 
 
+  <meta name="keywords" content="Hexo, NexT">
 
 
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
 
 
 
@@ -99,6 +99,7 @@
 <meta property="og:url" content="https://xlj44400.github.io/2018/01/09/如何用kotlin写DSLs/index.html">
 <meta property="og:site_name" content="xlj44400&#39;Blog">
 <meta property="og:description" content="Kotlin为开发人员提供了大量的语言功能，使开发人员更加可读，更简洁。我们可以用这些功能做的一件很酷的事情就是设计一个表达性的领域专用语言或DSL 什么是领域专用语言（domain specific language / DSL）？首先，DSL究竟是什么，我们为什么要使用它们？让我们来看看维基百科对DSL的定义：  领域专用语言（DSL）是专用于一个特定的应用领域的计算机语言。这与通用语言（GP">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2018-01-25T02:36:17.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="如何用kotlin写DSLs（入门篇）">
@@ -130,7 +131,7 @@
 
 
 
-  <link rel="canonical" href="https://xlj44400.github.io/2018/01/09/如何用kotlin写DSLs/"/>
+  <link rel="canonical" href="https://xlj44400.github.io/2018/01/09/如何用kotlin写DSLs/">
 
 
 
@@ -170,7 +171,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">xlj44400'Blog</span>
         <span class="logo-line-after"><i></i></span>
@@ -200,7 +201,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             首页
           </a>
@@ -210,7 +211,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             归档
           </a>
@@ -220,7 +221,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             标签
           </a>
@@ -259,7 +260,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="xlj44400">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="https://pic.manqian.cn/2d363401-d913-4d3d-b8fb-1c21f9dacf93?t=1500191019176">
     </span>
 
@@ -295,7 +296,7 @@
           </span>
 
           
-            <span class="post-category" >
+            <span class="post-category">
             
               <span class="post-meta-divider">|</span>
             
@@ -386,27 +387,27 @@
 <p>我们继续这些例子的时候，这些的使用会在一分钟内变得更加清晰。</p>
 <p>为了使一切都可以理解，我将使用一个简单的模型来创建我们的DSL。我们不应该在创建任何类的时候创建DSL。这将是一个不必要的工作。使用DSL的好地方可以是配置类或者库接口，用户不需要知道模型。</p>
 <h3 id="来写我们的第一个DSL"><a href="#来写我们的第一个DSL" class="headerlink" title="来写我们的第一个DSL"></a>来写我们的第一个DSL</h3><p>在这部分我们将创建一个简单的DSL，它能够实例化Person类的一个对象。请注意，这仅仅是一个例子。以下是本教程结束时的一个示例。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">val person = person &#123;</div><div class="line">    name = <span class="string">"John"</span></div><div class="line">    age = <span class="number">25</span></div><div class="line">    address &#123;</div><div class="line">        street = <span class="string">"Main Street"</span></div><div class="line">        number = <span class="number">42</span></div><div class="line">        city = <span class="string">"London"</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">val person = person &#123;</span><br><span class="line">    name = <span class="string">"John"</span></span><br><span class="line">    age = <span class="number">25</span></span><br><span class="line">    address &#123;</span><br><span class="line">        street = <span class="string">"Main Street"</span></span><br><span class="line">        number = <span class="number">42</span></span><br><span class="line">        city = <span class="string">"London"</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>正如你所看到的，上面的代码是非常容易理解的。即使没有开发者经验的人也可以阅读，甚至做出调整。为了了解我们如何到达那里，我们将采取几个步骤。这是我们要准备的模型：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function">data class <span class="title">Person</span><span class="params">(var name: String? = <span class="keyword">null</span>,</span></span></div><div class="line">                  var age: Int? = <span class="keyword">null</span>,</div><div class="line">                  var address: Address? = <span class="keyword">null</span>)</div><div class="line"></div><div class="line"></div><div class="line">data class <span class="title">Address</span><span class="params">(var street: String? = <span class="keyword">null</span>,</span></div><div class="line">                   var number: Int? = <span class="keyword">null</span>,</div><div class="line">                   var city: String? = <span class="keyword">null</span>)</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function">data class <span class="title">Person</span><span class="params">(var name: String? = <span class="keyword">null</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">                  var age: Int? = <span class="keyword">null</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">                  var address: Address? = <span class="keyword">null</span>)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">data class <span class="title">Address</span><span class="params">(var street: String? = <span class="keyword">null</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">                   var number: Int? = <span class="keyword">null</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">                   var city: String? = <span class="keyword">null</span>)</span></span></span><br></pre></td></tr></table></figure>
 <p>很显然，这不是最后想要的优雅模型。最终我们希望拥有不可变的<code>vals</code>。我们将在后续部分中介绍这一点。</p>
 <p>现在要做的第一件事就是创建一个新文件，将保持DSL与模型中的实际类分离。首先为Person类创建一些构造函数。看看我们想要的结果，看到Person的属性是在代码块中定义的。这些花括号实际上是定义一个lambda。这就是使用上面提到的三种Kotlin语言特征中的第一种语言特征的地方：<strong>在方法括号外使用<code>Lambda</code></strong>。</p>
 <p>如果一个函数的最后一个参数是一个lambda，可以把它放在方法括号之外。而当你只有一个lambda作为参数时，你可以省略整个括号。<code>person {…}</code>实际上与<code>person({…})</code>相同。这在我们的DSL中变得更简洁。现在来编写person函数的第一个版本。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function">fun <span class="title">person</span><span class="params">(block: (Person)</span> -&gt; Unit): Person </span>&#123;</div><div class="line">    val p = Person()</div><div class="line">    block(p)</div><div class="line">    <span class="keyword">return</span> p</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">fun <span class="title">person</span><span class="params">(block: (Person)</span> -&gt; Unit): Person </span>&#123;</span><br><span class="line">    val p = Person()</span><br><span class="line">    block(p)</span><br><span class="line">    <span class="keyword">return</span> p</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>所以在这里我们有一个创建一个Person对象的函数。它需要一个带有我们在第2行创建的对象的lambda。当在第3行执行这个lambda时，我们期望在返回第4行的对象之前，该对象获得它所需要的属性。下面展示如何使用这个函数：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">val person = person &#123;</div><div class="line">    it.name = <span class="string">"John"</span></div><div class="line">    it.age = <span class="number">25</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">val person = person &#123;</span><br><span class="line">    it.name = <span class="string">"John"</span></span><br><span class="line">    it.age = <span class="number">25</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>由于这个lambda只接收一个参数，可以用它来调用person对象。这看起来不错，但还不够完美，如果在我们的DSL看到的东西。特别是当我们要在那里添加额外的对象层。这带来了我们接下来提到的Kotlin功能：带接受者的<code>Lambda</code>。</p>
 <p>在person函数的定义中，可以给<code>lambda</code>添加一个接收者。这样只能在<code>lambda</code>中访问那个接收器的函数。由于lambda中的函数在接收者的范围内，则可以简单地在接收者上执行lambda，而不是将其作为参数提供。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function">fun <span class="title">person</span><span class="params">(block: Person.()</span> -&gt; Unit): Person </span>&#123;</div><div class="line">    val p = Person()</div><div class="line">    p.block()</div><div class="line">    <span class="keyword">return</span> p</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">fun <span class="title">person</span><span class="params">(block: Person.()</span> -&gt; Unit): Person </span>&#123;</span><br><span class="line">    val p = Person()</span><br><span class="line">    p.block()</span><br><span class="line">    <span class="keyword">return</span> p</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>这实际上可以通过使用Kotlin提供的apply函数在一个简单的单行程中重写。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function">fun <span class="title">person</span><span class="params">(block: Person.()</span> -&gt; Unit): Person </span>= Person().apply(block)</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function">fun <span class="title">person</span><span class="params">(block: Person.()</span> -&gt; Unit): Person </span>= Person().apply(block)</span><br></pre></td></tr></table></figure>
 <p>现在可以将其从DSL中删除:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">val person = person &#123;</div><div class="line">    name = <span class="string">"John"</span></div><div class="line">    age = <span class="number">25</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">val person = person &#123;</span><br><span class="line">    name = <span class="string">"John"</span></span><br><span class="line">    age = <span class="number">25</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>到目前为止，还差一个Address类，在我们想要的结果中，它看起来很像刚刚创建的person函数。唯一的区别是必须将它分配给Person对象的Address属性。为此，可以使用上面提到的三个Kotlin语言功能中的最后一个：扩展函数。</p>
 <p>扩展函数能够向类中添加函数，而无需访问类本身的源代码。这是创建Address对象的完美选择，并直接将其分配给Person的地址属性。这是Dsl文件的最终版本：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function">fun <span class="title">person</span><span class="params">(block: Person.()</span> -&gt; Unit): Person </span>= Person().apply(block)</div><div class="line"></div><div class="line">fun Person.address(block: Address.() -&gt; Unit) &#123;</div><div class="line">    address = Address().apply(block)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function">fun <span class="title">person</span><span class="params">(block: Person.()</span> -&gt; Unit): Person </span>= Person().apply(block)</span><br><span class="line"></span><br><span class="line">fun Person.address(block: Address.() -&gt; Unit) &#123;</span><br><span class="line">    address = Address().apply(block)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>现在为Person添加一个地址函数，它接受一个Address作为接收者的lambda表达式，就像对person构造函数所做的那样。然后它将创建的Address对象设置为Person的属性：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">val person = person &#123;</div><div class="line">    name = <span class="string">"John"</span></div><div class="line">    age = <span class="number">25</span></div><div class="line">    address &#123;</div><div class="line">        street = <span class="string">"Main Street"</span></div><div class="line">        number = <span class="number">42</span></div><div class="line">        city = <span class="string">"London"</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">val person = person &#123;</span><br><span class="line">    name = <span class="string">"John"</span></span><br><span class="line">    age = <span class="number">25</span></span><br><span class="line">    address &#123;</span><br><span class="line">        street = <span class="string">"Main Street"</span></span><br><span class="line">        number = <span class="number">42</span></span><br><span class="line">        city = <span class="string">"London"</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>创建dsl其实也就是这么简单的</p>
 
       
@@ -505,7 +506,7 @@
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             文章目录
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -516,9 +517,7 @@
 
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="https://pic.manqian.cn/2d363401-d913-4d3d-b8fb-1c21f9dacf93?t=1500191019176"
-               alt="xlj44400" />
+          <img class="site-author-image" itemprop="image" src="https://pic.manqian.cn/2d363401-d913-4d3d-b8fb-1c21f9dacf93?t=1500191019176" alt="xlj44400">
           <p class="site-author-name" itemprop="name">xlj44400</p>
            
               <p class="site-description motion-element" itemprop="description">技术和生活,我融为一体</p>
@@ -529,7 +528,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-count">12</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -540,7 +539,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">15</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -646,7 +645,7 @@
       <div class="footer-inner">
         <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
 </script>
-<div class="copyright" >
+<div class="copyright">
   
   &copy; 
   <span itemprop="copyrightYear">2019</span>

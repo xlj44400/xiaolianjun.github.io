@@ -6,10 +6,10 @@
 
 
 <html class="theme-next pisces use-motion" lang="zh-Hans">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
@@ -19,8 +19,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -38,7 +38,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -72,21 +72,21 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="Vert.x,Guice," />
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
 
 
+  <meta name="keywords" content="Vert.x,Guice,">
 
 
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
 
 
 
@@ -100,6 +100,7 @@
 <meta property="og:url" content="https://xlj44400.github.io/2018/01/16/Java Vert.x 集成Guice/index.html">
 <meta property="og:site_name" content="xlj44400&#39;Blog">
 <meta property="og:description" content="Guice介绍 Guice是谷歌推出的一个轻量级依赖注入框架，帮助我们解决Java项目中的依赖注入问题。如果使用过Spring的话，会了解到依赖注入是个非常方便的功能。不过假如只想在项目中使用依赖注入，那么引入Spring未免大材小用了。这时候我们可以考虑使用Guice。本文参考了Guice官方文档，详细信息可以直接查看Guice文档。更多阅读  Vert.x Vert.x是用于开发高度可扩展的非">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2018-01-25T02:49:35.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java Vert.x 集成Guice">
@@ -131,7 +132,7 @@
 
 
 
-  <link rel="canonical" href="https://xlj44400.github.io/2018/01/16/Java Vert.x 集成Guice/"/>
+  <link rel="canonical" href="https://xlj44400.github.io/2018/01/16/Java Vert.x 集成Guice/">
 
 
 
@@ -171,7 +172,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">xlj44400'Blog</span>
         <span class="logo-line-after"><i></i></span>
@@ -201,7 +202,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             首页
           </a>
@@ -211,7 +212,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             归档
           </a>
@@ -221,7 +222,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             标签
           </a>
@@ -260,7 +261,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="xlj44400">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="https://pic.manqian.cn/2d363401-d913-4d3d-b8fb-1c21f9dacf93?t=1500191019176">
     </span>
 
@@ -296,7 +297,7 @@
           </span>
 
           
-            <span class="post-category" >
+            <span class="post-category">
             
               <span class="post-meta-divider">|</span>
             
@@ -365,26 +366,26 @@
 
       
         <h3 id="Guice介绍"><a href="#Guice介绍" class="headerlink" title="Guice介绍"></a>Guice介绍</h3><blockquote>
-<p><a href="https://github.com/google/guice" target="_blank" rel="external">Guice</a>是谷歌推出的一个轻量级依赖注入框架，帮助我们解决Java项目中的依赖注入问题。如果使用过Spring的话，会了解到依赖注入是个非常方便的功能。不过假如只想在项目中使用依赖注入，那么引入Spring未免大材小用了。这时候我们可以考虑使用Guice。本文参考了Guice官方文档，详细信息可以直接查看<a href="https://github.com/google/guice/wiki/InstanceBindings" target="_blank" rel="external">Guice文档</a>。<br><a href="http://www.jianshu.com/p/a648322dc680" target="_blank" rel="external">更多阅读</a></p>
+<p><a href="https://github.com/google/guice" target="_blank" rel="noopener">Guice</a>是谷歌推出的一个轻量级依赖注入框架，帮助我们解决Java项目中的依赖注入问题。如果使用过Spring的话，会了解到依赖注入是个非常方便的功能。不过假如只想在项目中使用依赖注入，那么引入Spring未免大材小用了。这时候我们可以考虑使用Guice。本文参考了Guice官方文档，详细信息可以直接查看<a href="https://github.com/google/guice/wiki/InstanceBindings" target="_blank" rel="noopener">Guice文档</a>。<br><a href="http://www.jianshu.com/p/a648322dc680" target="_blank" rel="noopener">更多阅读</a></p>
 </blockquote>
 <h3 id="Vert-x"><a href="#Vert-x" class="headerlink" title="Vert.x"></a>Vert.x</h3><blockquote>
-<p>Vert.x是用于开发高度可扩展的非阻塞应用程序的reactive工具集。本文主要介绍vertx与guice的集成，<a href="https://github.com/ltamrazov/vertx-starter-guide/tree/part-3" target="_blank" rel="external">github</a></p>
+<p>Vert.x是用于开发高度可扩展的非阻塞应用程序的reactive工具集。本文主要介绍vertx与guice的集成，<a href="https://github.com/ltamrazov/vertx-starter-guide/tree/part-3" target="_blank" rel="noopener">github</a></p>
 </blockquote>
 <h3 id="Vert-x-Guice"><a href="#Vert-x-Guice" class="headerlink" title="Vert.x Guice"></a>Vert.x Guice</h3><blockquote>
-<p> Vert.x还没有内置的依赖注入。由于您无法希望在没有它的情况下开发可维护和可测试的应用程序，所以我们需要一个解决方案，因为我们使用Java，所以该解决方案是Guice。Guice是由Google开发的<a href="https://github.com/google/guice" target="_blank" rel="external">大型依赖注入库</a>。Guice的Vert.x插件已经由ef-labs构建，<a href="https://github.com/ef-labs/vertx-guice" target="_blank" rel="external">在这里找到</a>。对于Guice整合的令人敬畏的工作的所有信用都归功于他们。这篇文章将简单地演示如何将它合并到您的应用程序中。将此依赖项添加到您的项目中：</p>
+<p> Vert.x还没有内置的依赖注入。由于您无法希望在没有它的情况下开发可维护和可测试的应用程序，所以我们需要一个解决方案，因为我们使用Java，所以该解决方案是Guice。Guice是由Google开发的<a href="https://github.com/google/guice" target="_blank" rel="noopener">大型依赖注入库</a>。Guice的Vert.x插件已经由ef-labs构建，<a href="https://github.com/ef-labs/vertx-guice" target="_blank" rel="noopener">在这里找到</a>。对于Guice整合的令人敬畏的工作的所有信用都归功于他们。这篇文章将简单地演示如何将它合并到您的应用程序中。将此依赖项添加到您的项目中：</p>
 </blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">build.gradle:</div><div class="line">compile &apos;com.englishtown.vertx:vertx-guice:2.3.1&apos;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">build.gradle:</span><br><span class="line">compile &apos;com.englishtown.vertx:vertx-guice:2.3.1&apos;</span><br></pre></td></tr></table></figure>
 <h3 id="Service-Binder"><a href="#Service-Binder" class="headerlink" title="Service Binder"></a>Service Binder</h3><blockquote>
 <p>我们需要做的第一件事是创建一个可以配置Guice来提供我们所有类的绑定器。为此，我们需要创建一个扩展的类AbstractModule。绑定器的工作是告诉Guice如何构建我们需要的所有类，并绑定我们想要用于我们在构造函数中指定的特定接口的实现。看起来像这样：</p>
 </blockquote>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">ServiceBinder.java：</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ServiceBinder</span> <span class="keyword">extends</span> <span class="title">AbstractModule</span> </span>&#123; </div><div class="line"></div><div class="line">    <span class="meta">@Provides</span> <span class="meta">@Singleton</span></div><div class="line">     <span class="keyword">public</span> HelloController provideController（Vertx vertx，</div><div class="line">        HelloWorld service）</div><div class="line">    &#123; </div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> HelloController（vertx，service）; </div><div class="line">    &#125; </div><div class="line"></div><div class="line">    <span class="meta">@Provides</span> <span class="meta">@Singleton</span></div><div class="line">     <span class="keyword">public</span> HelloWorld provideService（）&#123; </div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> HelloWorld（）; </div><div class="line">    &#125; </div><div class="line"></div><div class="line">    <span class="meta">@Provides</span> <span class="meta">@Singleton</span></div><div class="line">     <span class="keyword">public</span> AppConfig provideAppConfig（）&#123; </div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> AppConfig（<span class="number">30</span>，<span class="number">30</span>）; </div><div class="line">    &#125; </div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">     <span class="keyword">protected</span> <span class="keyword">void</span> configure（）&#123; </div><div class="line"></div><div class="line">    &#125; </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">ServiceBinder.java：</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ServiceBinder</span> <span class="keyword">extends</span> <span class="title">AbstractModule</span> </span>&#123; </span><br><span class="line"></span><br><span class="line">    <span class="meta">@Provides</span> <span class="meta">@Singleton</span></span><br><span class="line">     <span class="keyword">public</span> HelloController provideController（Vertx vertx，</span><br><span class="line">        HelloWorld service）</span><br><span class="line">    &#123; </span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> HelloController（vertx，service）; </span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">    <span class="meta">@Provides</span> <span class="meta">@Singleton</span></span><br><span class="line">     <span class="keyword">public</span> HelloWorld provideService（）&#123; </span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> HelloWorld（）; </span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">    <span class="meta">@Provides</span> <span class="meta">@Singleton</span></span><br><span class="line">     <span class="keyword">public</span> AppConfig provideAppConfig（）&#123; </span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> AppConfig（<span class="number">30</span>，<span class="number">30</span>）; </span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">     <span class="keyword">protected</span> <span class="keyword">void</span> configure（）&#123; </span><br><span class="line"></span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>该@Provides注解标记的方法作为提供者，@Singleton 表示注入的实例为单例，<br>我们要做的第二件事是覆盖该configure方法。当模块被实例化时，该方法被调用，并且它可以包括任何其他配置。我们实际上可以把我们做的方法的所有配置放在configure方法中，但是我发现它更可读和更方便地实现这些方法，所以我们configure是空的。</p>
 </blockquote>
 <h3 id="Main-Class"><a href="#Main-Class" class="headerlink" title="Main Class"></a>Main Class</h3><blockquote>
 <p>在我们使用<code>ServiceLauncher</code>类来部署我们的verticle之前。这依赖于我们构建Vert.x Launcher类的构建，并将其指向我们<code>ServiceLauncher</code>。这很好，但是如果我们要手动部署我们的verticle，我们需要一个主类。此类将创建一个Vert.x实例，并使用帮助方法使用Guice部署我们的verticle。这是我们的Main：</p>
 </blockquote>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line">Main.java:</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</div><div class="line">        Vertx vertx = Vertx.vertx();</div><div class="line">        deploy(vertx, ServiceLauncher.class,</div><div class="line">                                  <span class="keyword">new</span> DeploymentOptions());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> Future&lt;Void&gt; <span class="title">deploy</span><span class="params">(Vertx vertx, Class verticle,</span></span></div><div class="line">        DeploymentOptions opts)</div><div class="line">    &#123;</div><div class="line">        Future&lt;Void&gt; done = Future.future();</div><div class="line">        String deploymentName = <span class="string">"java-guice:"</span> + verticle.getName();</div><div class="line">        JsonObject config = <span class="keyword">new</span> JsonObject()</div><div class="line">                .put(<span class="string">"guice_binder"</span>, ServiceBinder.class.getName());</div><div class="line"></div><div class="line">        opts.setConfig(config);</div><div class="line"></div><div class="line">        vertx.deployVerticle(deploymentName, opts, r -&gt; &#123;</div><div class="line">              <span class="comment">// handle success/failure</span></div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        <span class="keyword">return</span> done;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ServiceLauncher</span> <span class="keyword">extends</span> <span class="title">AbstractVerticle</span></span>&#123;</div><div class="line">        <span class="keyword">private</span> AppConfig appConfig;</div><div class="line">        <span class="meta">@Inject</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="title">ServiceLauncher</span><span class="params">(AppConfig appConfig)</span> </span>&#123;</div><div class="line">            <span class="keyword">this</span>.appConfig = appConfig;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">/**</span></div><div class="line">         * Start method uses CompositeFuture to deploy all required </div><div class="line">         * verticles</div><div class="line">         *</div><div class="line">         * <span class="doctag">@param</span> done</div><div class="line">         */</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">(Future&lt;Void&gt; done)</span> </span>&#123;</div><div class="line">            <span class="comment">// start your verticle here</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">Main.java:</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">        Vertx vertx = Vertx.vertx();</span><br><span class="line">        deploy(vertx, ServiceLauncher.class,</span><br><span class="line">                                  <span class="keyword">new</span> DeploymentOptions());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> Future&lt;Void&gt; <span class="title">deploy</span><span class="params">(Vertx vertx, Class verticle,</span></span></span><br><span class="line"><span class="function"><span class="params">        DeploymentOptions opts)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Future&lt;Void&gt; done = Future.future();</span><br><span class="line">        String deploymentName = <span class="string">"java-guice:"</span> + verticle.getName();</span><br><span class="line">        JsonObject config = <span class="keyword">new</span> JsonObject()</span><br><span class="line">                .put(<span class="string">"guice_binder"</span>, ServiceBinder.class.getName());</span><br><span class="line"></span><br><span class="line">        opts.setConfig(config);</span><br><span class="line"></span><br><span class="line">        vertx.deployVerticle(deploymentName, opts, r -&gt; &#123;</span><br><span class="line">              <span class="comment">// handle success/failure</span></span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> done;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ServiceLauncher</span> <span class="keyword">extends</span> <span class="title">AbstractVerticle</span></span>&#123;</span><br><span class="line">        <span class="keyword">private</span> AppConfig appConfig;</span><br><span class="line">        <span class="meta">@Inject</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">ServiceLauncher</span><span class="params">(AppConfig appConfig)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.appConfig = appConfig;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * Start method uses CompositeFuture to deploy all required </span></span><br><span class="line"><span class="comment">         * verticles</span></span><br><span class="line"><span class="comment">         *</span></span><br><span class="line"><span class="comment">         * <span class="doctag">@param</span> done</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">(Future&lt;Void&gt; done)</span> </span>&#123;</span><br><span class="line">            <span class="comment">// start your verticle here</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ol>
 <li>方法简单地创建一个Vert.x实例，并使用一个辅助方法来部署我们的静态verticle启动器类。<code>Vertx.vertx()</code>也可以选择指定不同的参数，例如实例数。</li>
 <li>接下来是我们的帮助方法，这是集成Guice库的重要部分。我们在这里做的第一件事是通过预先等待修改verticle的名称java-guice。Vert.x允许我们在部署之前创建和注册负责实例化verticle工厂。这个库提供了一个将Guice和名字开头为java-guice的Verticle集成起来的工厂方法。其次，我们在部署选项中指定我们的<code>ServiceBinder</code>，从而让Guice知道在哪里找到它。</li>
@@ -393,7 +394,7 @@
 <blockquote>
 <p>现在我们的verticles在任何地方都可以使用Guice依赖注入。我们修改了所有代码以反映这一点，将依赖关系注入到verticles，控制器和我们的服务类中。例如，HelloController构造函数如下所示：</p>
 </blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">@Inject</div><div class="line"> public HelloController（Vertx vertx，HelloWorld service）&#123; </div><div class="line">    this.vertx = vertx; </div><div class="line">    this.service = service; </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@Inject</span><br><span class="line"> public HelloController（Vertx vertx，HelloWorld service）&#123; </span><br><span class="line">    this.vertx = vertx; </span><br><span class="line">    this.service = service; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p><strong>注意</strong>：我们不需要在其中创建Vertx提供者，ServiceBinder因为Vert.x Guice库已经具有Vert.x提供者，它提供了用于部署Verticle的Vert.x实例。</p>
 </blockquote>
@@ -505,7 +506,7 @@
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             文章目录
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -516,9 +517,7 @@
 
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="https://pic.manqian.cn/2d363401-d913-4d3d-b8fb-1c21f9dacf93?t=1500191019176"
-               alt="xlj44400" />
+          <img class="site-author-image" itemprop="image" src="https://pic.manqian.cn/2d363401-d913-4d3d-b8fb-1c21f9dacf93?t=1500191019176" alt="xlj44400">
           <p class="site-author-name" itemprop="name">xlj44400</p>
            
               <p class="site-description motion-element" itemprop="description">技术和生活,我融为一体</p>
@@ -529,7 +528,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-count">12</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -540,7 +539,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">15</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -646,7 +645,7 @@
       <div class="footer-inner">
         <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
 </script>
-<div class="copyright" >
+<div class="copyright">
   
   &copy; 
   <span itemprop="copyrightYear">2019</span>
